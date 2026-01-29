@@ -1,0 +1,22 @@
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Deploy on all-inkl
+    runs-on: unbuntu-latest
+    steps:
+      - name: Checkout and pull data
+        uses: appleboy/ssh-action@master
+        with:
+          host: w01c4ca9.kasserver.com
+          username: ssh-w02125cc 
+          key: ${{secrets.SSH_KEY}}
+          script:
+            cd //www/htdocs/w02125cc/website
+            git pull
