@@ -1,0 +1,54 @@
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions: 
+  contents: write
+
+jobs:
+  publish:
+    name: Deploy on all-inkl
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Build pages
+        uses: retypeapp/action-build@latest
+
+      - name: Store in branch
+        uses: retypeapp/action-github-pages@latest
+        with:
+          branch: retype
+          update-branch: true
+          
+      - name: Refresh server worktree
+        uses: appleboy/ssh-action@master
+        with:
+          host: w01c4ca9.kasserver.com
+          username: ssh-w02125cf
+          key: ${{secrets.SSH_KEY}}
+          script: |
+            set -e
+            git -C /www/htdocs/w02125cf/.repo fetch origin retype
+            git -C /www/htdocs/w02125cf/website reset --hard origin/retype
+            git -C /www/htdocs/w02125cf/website clean -fdx
+            # .htaccess (neu) schreiben
+            cat > /www/htdocs/w02125cf/website/.htaccess <<'EOF'
+            # Schutz: keine .git* ausliefern
+            <FilesMatch "^\.git">
+              Require all denied
+            </FilesMatch>
+            # (optional) Keine Verzeichnislistings
+            Options -Indexes
+            AuthUserFile /www/htdocs/w02125cf/website/.htpasswd
+            AuthGroupFile /dev/null
+            AuthName 'bitte Zugangsdaten eingeben'
+            AuthType Basic
+            require valid-user
+            EOF
+            # .htpasswd (neu) schreiben
+            cat > /www/htdocs/w02125cf/website/.htpasswd <<'EOF'
+            mmuster:hashpwd
+            EOF 
