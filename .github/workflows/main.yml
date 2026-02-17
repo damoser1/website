@@ -51,4 +51,4 @@ jobs:
             # .htpasswd (neu) schreiben
             cat > /www/htdocs/w02125cc/website/.htpasswd <<'EOF'
             mmuster:hashpwd
-            EOF 
+            EOF
