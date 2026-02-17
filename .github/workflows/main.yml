@@ -27,7 +27,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: w01c4ca9.kasserver.com
-          username: w02125cc 
+          username: ssh-w02125cc
           key: ${{secrets.SSH_KEY}}
           script: |
             set -e
@@ -51,5 +51,4 @@ jobs:
             # .htpasswd (neu) schreiben
             cat > /www/htdocs/w02125cc/website/.htpasswd <<'EOF'
             mmuster:hashpwd
-            EOF 
-
+            EOF
