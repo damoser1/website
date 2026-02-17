@@ -27,29 +27,29 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: w01c4ca9.kasserver.com
-          username: ssh-w02125cf
+          username: w02125cc 
           key: ${{secrets.SSH_KEY}}
           script: |
             set -e
-            git -C /www/htdocs/w02125cf/.repo fetch origin retype
-            git -C /www/htdocs/w02125cf/website reset --hard origin/retype
-            git -C /www/htdocs/w02125cf/website clean -fdx
+            git -C /www/htdocs/w02125cc/.repo fetch origin retype
+            git -C /www/htdocs/w02125cc/website reset --hard origin/retype
+            git -C /www/htdocs/w02125cc/website clean -fdx
             # .htaccess (neu) schreiben
-            cat > /www/htdocs/w02125cf/website/.htaccess <<'EOF'
+            cat > /www/htdocs/w02125cc/website/.htaccess <<'EOF'
             # Schutz: keine .git* ausliefern
             <FilesMatch "^\.git">
               Require all denied
             </FilesMatch>
             # (optional) Keine Verzeichnislistings
             Options -Indexes
-            AuthUserFile /www/htdocs/w02125cf/website/.htpasswd
+            AuthUserFile /www/htdocs/w02125cc/website/.htpasswd
             AuthGroupFile /dev/null
             AuthName 'bitte Zugangsdaten eingeben'
             AuthType Basic
             require valid-user
             EOF
             # .htpasswd (neu) schreiben
-            cat > /www/htdocs/w02125cf/website/.htpasswd <<'EOF'
+            cat > /www/htdocs/w02125cc/website/.htpasswd <<'EOF'
             mmuster:hashpwd
             EOF 
 
