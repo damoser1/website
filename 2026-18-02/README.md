@@ -1,0 +1,40 @@
+---
+author: David Moser
+label: Gutscheine
+---
+
+# Projektdokumentation – Gutscheinverwaltung
+
+## 18. Februar 2026
+
+### Vorbereitung
+
+- Projektstruktur angelegt und Konzept inkl. Datenbankmodell erarbeitet (angefangen)
+
+### Grundkonzept
+
+Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können.
+
+#### Anforderungen
+
+- Gutscheine sollen erstellt, gespeichert, bearbeitet und gelöscht werden können (CRUD)
+- Direktor und Sekretariat haben vollen Zugriff auf alle Gutscheine und sämtliche Berechtigungen
+- Direktor/Sekretariat können einzelnen Lehrern die Berechtigung zur Vergabe bestimmter Gutscheine erteilen
+- Nicht jeder Lehrer soll Gutscheine erstellen können – nur Sekretariat und Direktor haben volle Einsicht
+- Der Klassenvorstand (KV) kann Gutscheine von Schülern seiner Klasse einlösen (mit Bestätigung)
+- Wenn eine Lehrperson einen Gutschein vergibt, muss dieser durch das Sekretariat/den Direktor bestätigt werden
+- Die User-Experience soll einfach und schnell sein
+- Schüler erhalten ihren Gutschein per E-Mail als PDF mit QR-Code
+- Ein Schüler wird in der Datenbank gespeichert, sobald er einen Gutschein erhält. Werden alle seine Gutscheine (auch im Archiv) endgültig gelöscht, wird auch der Schüler-Eintrag entfernt
+
+#### Gutschein-Eigenschaften
+
+- Jeder Gutschein hat ein individuelles Ablaufdatum
+- Gelöschte Gutscheine werden für 5 Jahre im Archiv aufbewahrt (abhängig vom Verbleib des Schülers an der Schule)
+- Gutscheine haben eine eigene Bedeutung/Begründung (z. B. „Ausgezeichneter Erfolg")
+- Jeder Gutschein-Typ hat einen fixen Aufbau (Template), der vom Administrator angepasst werden kann
+- Beispiele für Templates: Nachmittag frei, Vormittag frei, ganzer Tag frei, ganze Woche frei
+
+### Bisherige Umsetzung
+
+Das Laravel-Projekt wurde initialisiert und die Pakete Fortify (Authentifizierung) sowie Sanctum (API-Token-Verwaltung) eingebunden. Anschließend wurden drei Datenbankmigrationen erstellt: Die `users`-Tabelle wurde um Felder für Rolle, Klassenzugehörigkeit, Matrikelnummer und Berechtigungen erweitert. Die Tabelle `voucher_rules` speichert die konfigurierbaren Gutschein-Vorlagen (Typ, Menge, Einheit, Gültigkeitsdauer). Die Tabelle `vouchers` bildet die einzelnen ausgestellten Gutscheine ab – inklusive Status-Verwaltung (aktiv, eingelöst, abgelaufen, ungültig), Archivierung mit Aufbewahrungsfrist und Nachverfolgung der Einlösung.
