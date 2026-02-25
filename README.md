@@ -1,1 +1,1 @@
-# Projektdokumentation – Gutscheinverwaltung
+Dokumentation
