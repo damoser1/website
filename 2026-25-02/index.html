@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="4.0.1.825336330494">
+
+    <!-- See retype.com -->
+    <meta name="generator" content="Retype 4.0.1">
+
+    <!-- Primary Meta Tags -->
+    <title>Projektdokumentation – Gutscheinverwaltung erweitert</title>
+    <meta name="title" content="Projektdokumentation – Gutscheinverwaltung erweitert">
+    <meta name="description" content="Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können. Die Gutscheine werden">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="/2026-25-02/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/2026-25-02/">
+    <meta property="og:title" content="Projektdokumentation – Gutscheinverwaltung erweitert">
+    <meta property="og:description" content="Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können. Die Gutscheine werden">
+    <meta property="og:site_name" content="Project Name">
+    <meta property="og:locale" content="en_US">
+
+    <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
+
+    <link href="../resources/css/retype.css?v=4.0.1.825336330494" rel="stylesheet">
+
+    <script data-cfasync="false" src="../resources/js/config.js?v=4.0.1.825336330494" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/retype.js?v=4.0.1" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=4.0.1.825336330494" data-turbo-eval="false" defer></script>
+</head>
+<body>
+    <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
+    <div class="absolute bottom-0 left-0" style="top: 5rem; right: 50%"></div>
+
+    <header id="retype-header" class="sticky top-0 z-30 flex w-full h-16 bg-header-bg border-b border-header-border md:h-20">
+        <div class="container relative flex items-center justify-between pr-6 grow md:justify-start">
+            <!-- Mobile menu button skeleton -->
+            <button v-cloak class="skeleton retype-mobile-menu-button flex items-center justify-center shrink-0 overflow-hidden dark:text-white focus:outline-hidden rounded-full w-10 h-10 ml-3.5 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" class="mb-px shrink-0" width="24" height="24" viewBox="0 0 24 24" role="presentation" style="margin-bottom: 0px;"><g fill="currentColor"><path d="M2 4h20v2H2zM2 11h20v2H2zM2 18h20v2H2z"></path></g></svg></button>
+            <div v-cloak id="retype-sidebar-left-toggle-button"></div>
+    
+            <!-- Logo -->
+            <div class="flex items-center justify-between h-full py-2 md:w-75">
+                <div class="flex items-center px-2 md:px-6">
+                    <a id="retype-branding-logo" href="../" class="flex items-center leading-snug text-2xl">
+                        <span class="dark:text-white font-bold line-clamp-1 md:line-clamp-2">Project Name</span>
+                    </a>
+                </div>
+    
+                <span class="hidden h-8 border-r md:inline-block border-base-border"></span>
+            </div>
+    
+            <div class="flex justify-between md:grow">
+                <!-- Top Nav -->
+                <nav id="retype-header-nav" class="hidden md:flex">
+                    <ul class="flex flex-col mb-4 md:pl-16 md:mb-0 md:flex-row md:items-center">
+                        
+                    </ul>
+                </nav>
+    
+                <div v-cloak class="flex justify-end grow">
+                    <div id="retype-mobile-search-button"></div>
+                    <doc-search-desktop></doc-search-desktop>
+    
+                    <doc-theme-switch class="lg:ml-2"></doc-theme-switch>
+                    <doc-history></doc-history>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <div id="retype-container" class="container relative flex bg-white">
+        <!-- Sidebar Skeleton -->
+        <div v-cloak class="fixed flex flex-col shrink-0 duration-300 ease-in-out bg-sidebar-left-bg border-sidebar-left-border sidebar top-20 w-75 border-r h-screen md:sticky transition-transform skeleton">
+        
+            <div class="flex items-center h-16 px-6">
+                <input id="retype-filter-input-mock" class="w-full h-10 pl-8 px-3 py-2 transition-colors duration-200 ease-linear bg-filter-bg border border-filter-border rounded-lg shadow-none md:text-sm hover:border-filter-border-hover focus:outline-hidden focus:border-filter-border-focus placeholder-filter-placeholder" type="text">
+            </div>
+        
+            <div class="pl-6 mt-1 mb-4">
+                <div class="w-32 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+                <div class="w-48 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+                <div class="w-40 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+                <div class="w-32 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+                <div class="w-48 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+                <div class="w-40 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+            </div>
+        
+            <div class="shrink-0 mt-auto bg-transparent dark:border-base-border">
+                <a class="flex items-center justify-center flex-nowrap h-16 text-gray-350 dark:text-dark-400 hover:text-gray-600 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                    <span class="text-xs whitespace-nowrap">Powered by</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Sidebar component -->
+        <doc-sidebar v-cloak>
+            <template #sidebar-footer>
+                <div class="shrink-0 mt-auto border-t md:bg-transparent md:border-none dark:border-base-border">
+        
+                    <a class="flex items-center justify-center flex-nowrap h-16 text-gray-350 dark:text-dark-400 hover:text-gray-600 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                        <span class="text-xs whitespace-nowrap">Powered by</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                    </a>
+                </div>
+            </template>
+        </doc-sidebar>
+
+        <div class="grow min-w-0 bg-body-bg">
+            <!-- Render "toolbar" template here on api pages --><!-- Render page content -->
+<div class="flex">
+    <div id="retype-main" class="min-w-0 p-4 grow md:px-16">
+        <main class="relative pb-12 lg:pt-2">
+            <div class="retype-markdown" id="retype-content">
+                <!-- Rendered if sidebar right is enabled -->
+                <div id="retype-sidebar-right-toggle"></div>
+                <!-- Page content  -->
+<doc-anchor-target id="projektdokumentation--gutscheinverwaltung-erweitert" class="break-words">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#projektdokumentation--gutscheinverwaltung-erweitert">#</doc-anchor-trigger>
+        <span>Projektdokumentation – Gutscheinverwaltung erweitert</span>
+    </h1>
+</doc-anchor-target>
+<div class="-mt-3 mb-12 flex flex-wrap text-sm text-gray-400 dark:text-dark-350 items-center">
+    <div class="flex items-center">
+        <div>By</div>
+        <div class="ml-2 flex items-center">
+          <div class="shrink-0 w-8 h-8 overflow-hidden rounded-full">
+            <svg width="2rem" height="2rem" xmlns="http://www.w3.org/2000/svg" fill="white"><g><rect width="2rem" height="1.7rem" fill="#c5c5c5"/><circle r="0.44rem" cy="0.83rem" cx="1rem"/><ellipse ry="0.96rem" rx="0.77rem" cy="2.15rem" cx="1rem"/></g></svg>
+          </div>
+          <div class="ml-1 whitespace-nowrap text-gray-500 dark:text-dark-350">David Moser</div>
+        </div>
+    </div>
+</div>
+
+<doc-anchor-target id="grundkonzept">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#grundkonzept">#</doc-anchor-trigger>
+        <span>Grundkonzept</span>
+    </h2>
+</doc-anchor-target>
+<p>Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können. Die Gutscheine werden auf Basis konfigurierbarer Templates generiert, per E-Mail als PDF mit QR-Code an die Schüler versendet und können anschließend vom Klassenvorstand digital eingelöst werden.</p>
+<p>Zentrale Eigenschaften des Systems:</p>
+<ul>
+<li>Vollständige CRUD-Operationen für Gutscheine (Erstellen, Einsehen, Bearbeiten, Löschen)</li>
+<li>Rollenbasiertes Berechtigungssystem (Administrator, Lehrer, Schüler)</li>
+<li>Konfigurierbares Template-System für verschiedene Gutscheintypen</li>
+<li>Automatischer Versand des Gutscheins per E-Mail als PDF-Dokument mit individueller Gutschein-ID und QR-Code zur eindeutigen Identifikation.</li>
+<li>Stapel-Erstellung und Mehrfachversand: Ein Gutschein kann in einem Vorgang für mehrere Schüler erstellt werden (z. B. Teilnehmer einer Veranstaltung). Pro Schüler wird ein eigener Gutschein mit eigener Gutschein-ID und eigenem QR-Code generiert und versendet.</li>
+<li>Bestätigungsworkflow für Erstellung und Einlösung</li>
+<li>Archivierungssystem mit Aufbewahrungsfrist</li>
+</ul>
+<doc-anchor-target id="rollenmodell">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#rollenmodell">#</doc-anchor-trigger>
+        <span>Rollenmodell</span>
+    </h2>
+</doc-anchor-target>
+<p>Das System unterscheidet drei Benutzerrollen mit klar abgegrenzten Berechtigungen.</p>
+<doc-anchor-target id="administrator-direktion--sekretariat">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#administrator-direktion--sekretariat">#</doc-anchor-trigger>
+        <span>Administrator (Direktion / Sekretariat)</span>
+    </h3>
+</doc-anchor-target>
+<p>Der Administrator verfügt über Vollzugriff auf alle Funktionen des Systems. Im Einzelnen umfasst dies:</p>
+<ul>
+<li>Vollzugriff auf alle Gutscheine (Erstellen, Bearbeiten,  Einsehen, Löschen (auch abgelehnte oder fehlerhafte Gutscheine))</li>
+<li>Verwaltung und Anpassung von Gutschein-Templates</li>
+<li>Vergabe und Entzug von Lehrerberechtigungen zur Gutscheinerstellung</li>
+<li>Bestätigung von Gutscheinen nach Erstellung durch Lehrpersonen</li>
+</ul>
+<doc-anchor-target id="lehrer">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#lehrer">#</doc-anchor-trigger>
+        <span>Lehrer</span>
+    </h3>
+</doc-anchor-target>
+<p>Lehrpersonen haben eingeschränkte Rechte, die vom Administrator individuell vergeben werden:</p>
+<ul>
+<li>Erstellung von Gutscheinen (nur mit erteilter Berechtigung durch den Administrator)</li>
+<li>Nicht jede Lehrperson kann Gutscheine erstellen – die Berechtigung wird gezielt vergeben</li>
+<li>Der Klassenvorstand kann Gutscheine von Schülern seiner eigenen Klasse einlösen</li>
+<li>Einlösung erfolgt durch Scannen des QR-Codes oder Eingabe der Gutscheinnummer</li>
+</ul>
+<doc-anchor-target id="schüler">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#schüler">#</doc-anchor-trigger>
+        <span>Schüler</span>
+    </h3>
+</doc-anchor-target>
+<p>Schüler haben keinen direkten Zugriff auf das System. Sie sind ausschließlich Empfänger von Gutscheinen, die per E-Mail als PDF zugestellt werden. Ein Schüler wird erst in der Datenbank angelegt, wenn er seinen ersten Gutschein erhält bzw der Lehrer oder Administrator den Gutschein erstellt.</p>
+<doc-anchor-target id="berechtigungsmatrix">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#berechtigungsmatrix">#</doc-anchor-trigger>
+        <span>Berechtigungsmatrix</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Funktion</th>
+<th>Administrator</th>
+<th>Lehrer</th>
+<th>Schüler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gutschein erstellen</td>
+<td>✓</td>
+<td>Mit Berechtigung</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Gutschein bestätigen</td>
+<td>✓</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Gutschein einlösen</td>
+<td>✓</td>
+<td>Nur KV</td>
+<td>Übergabe an KV</td>
+</tr>
+<tr>
+<td>Gutschein einsehen</td>
+<td>Alle</td>
+<td>Selbst erstellte</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Templates erstellen</td>
+<td>✓</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Templates verwalten</td>
+<td>✓</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Templates erweitern</td>
+<td>✓</td>
+<td>✓ (individuelle Anpassungen)</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Gutschein-Inhalt ergänzen</td>
+<td>✓</td>
+<td>nur bei Erstellung</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Berechtigungen vergeben</td>
+<td>✓</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Archiv &amp; Löschrechte</td>
+<td>✓</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Gutschein empfangen</td>
+<td>–</td>
+<td>–</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="archiv">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#archiv">#</doc-anchor-trigger>
+        <span>Archiv</span>
+    </h3>
+</doc-anchor-target>
+<p>Die Archivierung und Löschung von Gutscheinen erfolgt automatisiert. Abgelaufene Gutscheine werden in ein Archiv überführt und nach Ablauf einer definierten Aufbewahrungsfrist endgültig gelöscht. Existieren danach keine archivierten Gutscheine mehr, wird auch der zugehörige Schülereintrag automatisch aus der Datenbank entfernt.</p>
+<doc-anchor-target id="workflow">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#workflow">#</doc-anchor-trigger>
+        <span>Workflow</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="gutschein-erstellung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gutschein-erstellung">#</doc-anchor-trigger>
+        <span>Gutschein-Erstellung</span>
+    </h3>
+</doc-anchor-target>
+<p>Der Erstellungsprozess durchläuft mehrere Schritte mit einem Bestätigungsmechanismus:</p>
+<ol>
+<li>Eine berechtigte Lehrperson oder ein Administrator erstellt einen neuen Gutschein auf Basis eines vordefinierten Templates (Bearbeitung möglich).</li>
+<li>Der Gutschein erhält einen Status und wird dem Sekretariat bzw. der Direktion zur Bestätigung vorgelegt. Abgelehnte Gutscheine können vom Administrator dauerhaft gelöscht werden, ansonsten wird er archiviert</li>
+<li>Das Sekretariat oder die Direktion prüft den Gutschein und bestätigt oder lehnt ihn ab.</li>
+<li>Nach der Bestätigung wird der Gutschein automatisch per E-Mail als PDF an den Schüler versendet. Der Status wechselt nach Versand.</li>
+</ol>
+<doc-anchor-target id="stapel-erstellung-mehrere-empfänger">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#stapel-erstellung-mehrere-empfänger">#</doc-anchor-trigger>
+        <span>Stapel-Erstellung (Mehrere Empfänger)</span>
+    </h3>
+</doc-anchor-target>
+<p>Neben der Erstellung für einzelne Schüler unterstützt das System eine Stapel-Erstellung für mehrere Empfänger (z. B. eine Gruppe von Teilnehmern einer Veranstaltung).</p>
+<ol>
+<li>Der Lehrer/Administrator wählt ein Template und erfasst die gemeinsamen Gutschein-Daten (Begründung, Gültigkeit, optional Zusatztext).</li>
+<li>Es wird eine Empfängerliste gewählt (z. B. Klasse, mehrere ausgewählte Schüler oder Import aus einer Liste).</li>
+<li>Das System erzeugt pro Empfänger einen eigenen Gutschein mit eindeutiger Gutschein-ID und QR-Code.</li>
+<li>Die Gutscheine werden gesammelt zur Bestätigung vorgelegt (Batch).</li>
+<li>Nach Bestätigung werden pro Empfänger automatisiert PDF und E-Mail versendet. Versandfehler werden pro Gutschein protokolliert, damit einzelne Empfänger erneut versendet werden können.</li>
+</ol>
+<doc-anchor-target id="gutschein-einlösung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gutschein-einlösung">#</doc-anchor-trigger>
+        <span>Gutschein-Einlösung</span>
+    </h3>
+</doc-anchor-target>
+<p>Die Einlösung eines Gutscheins erfolgt ausschließlich durch den Klassenvorstand des jeweiligen Schülers:</p>
+<ol>
+<li>Der Schüler leitet die erhaltene E-Mail mit Gutschein-Id an den Lehrer weiter oder übergibt den ausgedruckten Gutschein mit QR-Code.</li>
+<li>Das Sekretariat oder die Direktion prüft den Gutschein und bestätigt oder lehnt ihn ab.</li>
+<li>Der Klassenvorstand bestätigt die Einlösung im System. Der Gutschein-Status wieder und Gutschein gelangt in das Archiv.</li>
+</ol>
+<doc-anchor-target id="template">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#template">#</doc-anchor-trigger>
+        <span>Template</span>
+    </h2>
+</doc-anchor-target>
+<p>Ein Gutschein-Template definiert den festen Aufbau und das Erscheinungsbild eines Gutscheins und ermöglicht eine standardisierte Erstellung.</p>
+<p>Eigenschaften:</p>
+<ul>
+<li>Fester Textaufbau</li>
+<li>Platzhalter (Name, Klasse, Datum, Schuljahr, Begründung)</li>
+<li>Layout-Vorlage für das Design des Gutscheins</li>
+<li>Optional Logos oder Unterschriften</li>
+<li>Aktiv/Inaktiv-Status ob Template verwendbar ist</li>
+</ul>
+<p>Jeder Gutschein-Typ basiert auf einem vom Administrator konfigurierbaren Template. Templates werden zentral verwaltet und sorgen für eine einheitliche Gestaltung sowie konsistente Inhalte.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Template</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nachmittag frei</td>
+<td>Freistellung für einen Nachmittag</td>
+</tr>
+<tr>
+<td>Vormittag frei</td>
+<td>Freistellung für einen Vormittag</td>
+</tr>
+<tr>
+<td>Ganzer Tag frei</td>
+<td>Freistellung für einen gesamten Schultag</td>
+</tr>
+<tr>
+<td>2 Tage frei</td>
+<td>Freistellung für zwei gesamte Schultage</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="gutschein">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gutschein">#</doc-anchor-trigger>
+        <span>Gutschein</span>
+    </h2>
+</doc-anchor-target>
+<p>Ein Gutschein nutzt ein konkretes Template und enthält individuelle, schülerbezogene Informationen.</p>
+<ul>
+<li>Nutzung eines Templates als strukturelle Grundlage</li>
+<li>Eindeutige Gutscheinnummer zur Identifikation</li>
+<li>Zuordnung zu Aussteller (Administrator, Lehrperson) und Empfänger (Schüler)</li>
+<li>Individuelle Begründung (z. B. „Ausgezeichneter Erfolg&quot;, „Teilnahme Wettbewerb&quot;)</li>
+<li>Ausstellungsdatum und optionales Ablaufdatum</li>
+<li>QR-Code zur Einlösung</li>
+</ul>
+<doc-anchor-target id="statusübergänge">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#statusübergänge">#</doc-anchor-trigger>
+        <span>Statusübergänge</span>
+    </h2>
+</doc-anchor-target>
+<p>Ein Gutschein durchläuft während seines Lebenszyklus mehrere definierte Statusübergänge. Nach der Erstellung ist der Gutschein ausstehend und muss von einem Administrator bestätigt und aktiviert werden. Ein aktiver Gutschein kann anschließend eingelöst werden. Bei Überschreiten des Ablaufdatums wird der Gutschein automatisch archiviert und nach Ablauf der Aufbewahrungsfrist endgültig gelöscht.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Status</th>
+<th>Beschreibung</th>
+<th>Verantwortlich</th>
+<th>Nächster Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entwurf</td>
+<td>Gutschein wurde angelegt</td>
+<td>Lehrer/Admin</td>
+<td>Ausstehend</td>
+</tr>
+<tr>
+<td>Ausstehend</td>
+<td>Wartet auf Bestätigung</td>
+<td>Admin</td>
+<td>Bestätigt / Abgelehnt</td>
+</tr>
+<tr>
+<td>Bestätigt</td>
+<td>Freigegeben</td>
+<td>System/Admin</td>
+<td>Gesendet</td>
+</tr>
+<tr>
+<td>Gesendet</td>
+<td>Mail/PDF wurde verschickt</td>
+<td>System</td>
+<td>Eingelöst / Abgelaufen</td>
+</tr>
+<tr>
+<td>Eingelöst</td>
+<td>KV hat eingelöst</td>
+<td>KV/Admin</td>
+<td>Archiviert</td>
+</tr>
+<tr>
+<td>Abgelaufen</td>
+<td>Datum überschritten</td>
+<td>System</td>
+<td>Archiviert</td>
+</tr>
+<tr>
+<td>Archiviert</td>
+<td>Im Archiv</td>
+<td>System/Admin</td>
+<td>Gelöscht</td>
+</tr>
+<tr>
+<td>Gelöscht</td>
+<td>endgültig entfernt</td>
+<td>System/Admin</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="technische-umsetzung">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#technische-umsetzung">#</doc-anchor-trigger>
+        <span>Technische Umsetzung</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="datenbankmodell">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#datenbankmodell">#</doc-anchor-trigger>
+        <span>Datenbankmodell</span>
+    </h3>
+</doc-anchor-target>
+<doc-anchor-target id="allgemeines-ui-konzept">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#allgemeines-ui-konzept">#</doc-anchor-trigger>
+        <span>Allgemeines UI-Konzept</span>
+    </h2>
+</doc-anchor-target>
+<p>Die Benutzeroberfläche ist rollenbasiert aufgebaut, wobei nur die für die jeweilige Rolle relevanten Funktionen angezeigt werden.</p>
+<doc-anchor-target id="layout-und-navigation">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#layout-und-navigation">#</doc-anchor-trigger>
+        <span>Layout und Navigation</span>
+    </h3>
+</doc-anchor-target>
+<doc-anchor-target id="benutzeroberfläche-administratoren">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#benutzeroberfläche-administratoren">#</doc-anchor-trigger>
+        <span>Benutzeroberfläche Administratoren</span>
+    </h4>
+</doc-anchor-target>
+<p><strong>Navigation:</strong></p>
+<ul>
+<li>Dashboard</li>
+<li>Gutscheine (Suchfunktion Gutscheine, alle Gutscheine einsehen, selbst erstelle Gutscheine einsehen, Gutscheine erstellen)</li>
+<li>Templates</li>
+<li>Benutzer/Berechtigungen</li>
+<li>Archiv</li>
+</ul>
+<p><strong>Funktionen im Detail:</strong></p>
+<p><strong>Dashboard</strong></p>
+<ul>
+<li>Gesamtübersicht über Gutscheine nach Status, Anzahl ausstehender Bestätigungen</li>
+<li>Schnellzugriff auf zuletzt erstellte Gutscheine</li>
+<li>Hinweise auf ablaufende oder abgelaufene Gutscheine</li>
+</ul>
+<doc-anchor-target id="benutzeroberfläche-lehrer">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#benutzeroberfläche-lehrer">#</doc-anchor-trigger>
+        <span>Benutzeroberfläche Lehrer</span>
+    </h4>
+</doc-anchor-target>
+<p><strong>Navigation:</strong></p>
+<ul>
+<li>Dashboard</li>
+<li>Gutscheine (Suchfunktion Gutscheine, selbst erstelle Gutscheine, Gutschein erstellen)</li>
+<li>Templates personalisieren</li>
+<li>Gutschein einlösen</li>
+</ul>
+<p><strong>Funktionen im Detail:</strong></p>
+<p>Todo:
+UI Konzept erweitern</p>
+<p>Zurücksetzen des Gutscheins bzw Umänderung im Nachinein
+Kv bekommt nur das Recht Gutscheine bestätigen zu können,</p>
+<doc-anchor-target id="bisherige-umsetzung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#bisherige-umsetzung">#</doc-anchor-trigger>
+        <span>Bisherige Umsetzung</span>
+    </h3>
+</doc-anchor-target>
+<p>Das Laravel-Projekt wurde initialisiert und die Pakete Fortify (Authentifizierung) sowie Sanctum (API-Token-Verwaltung) eingebunden. Anschließend wurden drei Datenbankmigrationen erstellt: Die <code translate="no" v-pre>users</code>-Tabelle wurde um Felder für Rolle, Klassenzugehörigkeit, Matrikelnummer und Berechtigungen erweitert. Die Tabelle <code translate="no" v-pre>voucher_rules</code> speichert die konfigurierbaren Gutschein-Vorlagen (Typ, Menge, Einheit, Gültigkeitsdauer). Die Tabelle <code translate="no" v-pre>vouchers</code> bildet die einzelnen ausgestellten Gutscheine ab – inklusive Status-Verwaltung (aktiv, eingelöst, abgelaufen, ungültig), Archivierung mit Aufbewahrungsfrist und Nachverfolgung der Einlösung.</p>
+<doc-anchor-target id="vorbereitung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#vorbereitung">#</doc-anchor-trigger>
+        <span>Vorbereitung</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>Projektstruktur angelegt und Konzept inkl. Datenbankmodell erarbeitet (angefangen)</li>
+</ul>
+
+                
+                <!-- Required only on API pages -->
+                <doc-toolbar-member-filter-no-results></doc-toolbar-member-filter-no-results>
+            </div>
+            <footer id="retype-content-footer" class="clear-both">
+            
+                <nav id="retype-nextprev" class="print:hidden flex mt-14">
+                    <div class="w-1/2">
+                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../2026-18-02/">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                            <span>
+                                <span class="block text-xs font-normal text-base-text-muted">Previous</span>
+                                <span class="block mt-1">Gutscheine</span>
+                            </span>
+                        </a>
+                    </div>
+            
+                    <div class="w-1/2">
+                    </div>
+                </nav>
+            </footer>
+        </main>
+
+        <div id="retype-page-footer" class="print:border-none border-t border-base-border pt-6 mb-8">
+            <footer class="flex flex-wrap items-center justify-between print:justify-center">
+                <div id="retype-footer-links" class="print:hidden">
+                    <ul class="flex flex-wrap items-center text-sm">
+                    </ul>
+                </div>
+                <div id="retype-copyright" class="print:justify-center py-2 text-footer-text font-footer-link text-sm leading-relaxed"></div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Rendered if sidebar right is enabled -->
+    <!-- Sidebar right skeleton-->
+    <div v-cloak class="fixed top-0 bottom-0 right-0 translate-x-full bg-sidebar-right-bg border-sidebar-right-border lg:sticky lg:border-l lg:shrink-0 lg:pt-6 lg:translate-x-0 sm:w-1/2 lg:w-64 lg:z-0 md:w-104 sidebar-right skeleton">
+        <div class="pl-5">
+            <div class="w-32 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+            <div class="w-48 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+            <div class="w-40 h-3 mb-4 bg-skeleton-bg rounded-full loading"></div>
+        </div>
+    </div>
+
+    <!-- User should be able to hide sidebar right -->
+    <doc-sidebar-right v-cloak></doc-sidebar-right>
+</div>
+
+        </div>
+    </div>
+
+    <doc-search-mobile></doc-search-mobile>
+    <doc-back-to-top></doc-back-to-top>
+</div>
+
+
+    <div id="retype-overlay-target"></div>
+
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Gutscheine", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+</body>
+</html>
