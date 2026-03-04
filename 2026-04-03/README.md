@@ -286,6 +286,8 @@ Speichert die einzelnen ausgestellten Gutscheine mit allen individuellen Daten u
 | `retention_until`          | TIMESTAMP, NULL  | Ende der Aufbewahrungsfrist (danach Löschung)             |
 
 
+---
+
 ### Beziehungen (ER-Übersicht)
 
-
+![ER-Diagramm](/assets/Mermiad_Gutscheinverwaltung.png)
