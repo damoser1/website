@@ -1,6 +1,6 @@
 ---
 author: David Moser
-label: Gutscheine
+label: Dokumentation vom 18. Februar 2026
 ---
 
 # Projektdokumentation – Gutscheinverwaltung
@@ -36,5 +36,6 @@ Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schü
 - Beispiele für Templates: Nachmittag frei, Vormittag frei, ganzer Tag frei, ganze Woche frei
 
 ### Bisherige Umsetzung
+
 
 Das Laravel-Projekt wurde initialisiert und die Pakete Fortify (Authentifizierung) sowie Sanctum (API-Token-Verwaltung) eingebunden. Anschließend wurden drei Datenbankmigrationen erstellt: Die `users`-Tabelle wurde um Felder für Rolle, Klassenzugehörigkeit, Matrikelnummer und Berechtigungen erweitert. Die Tabelle `voucher_rules` speichert die konfigurierbaren Gutschein-Vorlagen (Typ, Menge, Einheit, Gültigkeitsdauer). Die Tabelle `vouchers` bildet die einzelnen ausgestellten Gutscheine ab – inklusive Status-Verwaltung (aktiv, eingelöst, abgelaufen, ungültig), Archivierung mit Aufbewahrungsfrist und Nachverfolgung der Einlösung.
