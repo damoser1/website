@@ -1,6 +1,6 @@
 ---
 author: David Moser
-label: Gutscheine
+label: Dokumentation vom 25. Februar 2026
 date: 25. Februar 2026
 ---
 
@@ -196,5 +196,6 @@ Kv bekommt nur das Recht Gutscheine bestätigen zu können,
 Das Laravel-Projekt wurde initialisiert und die Pakete Fortify (Authentifizierung) sowie Sanctum (API-Token-Verwaltung) eingebunden. Anschließend wurden drei Datenbankmigrationen erstellt: Die `users`-Tabelle wurde um Felder für Rolle, Klassenzugehörigkeit, Matrikelnummer und Berechtigungen erweitert. Die Tabelle `voucher_rules` speichert die konfigurierbaren Gutschein-Vorlagen (Typ, Menge, Einheit, Gültigkeitsdauer). Die Tabelle `vouchers` bildet die einzelnen ausgestellten Gutscheine ab – inklusive Status-Verwaltung (aktiv, eingelöst, abgelaufen, ungültig), Archivierung mit Aufbewahrungsfrist und Nachverfolgung der Einlösung.
 
 ### Vorbereitung
+
 
 - Projektstruktur angelegt und Konzept inkl. Datenbankmodell erarbeitet (angefangen)
