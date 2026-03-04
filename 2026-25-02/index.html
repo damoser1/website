@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="4.1.0.825922813975">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="4.1.0.825937751761">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 4.1.0">
@@ -27,11 +27,11 @@
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
-    <link href="../resources/css/retype.css?v=4.1.0.825922813975" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=4.1.0.825937751761" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=4.1.0.825922813975" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=4.1.0.825937751761" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=4.1.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=4.1.0.825922813975" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=4.1.0.825937751761" data-turbo-eval="false" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -145,7 +145,7 @@
         <span>Grundkonzept</span>
     </h2>
 </doc-anchor-target>
-<p>Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können. Die Gutscheine werden auf Basis konfigurierbarer Templates generiert, per E-Mail als PDF mit QR-Code an die Schüler versendet und können anschließend vom Klassenvorstand digital eingelöst werden.</p>
+<p>Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können. Die Gutscheine werden auf Basis konfigurierbarer Templates generiert, per E-Mail als PDF mit QR-Code an die Schüler versendet und können anschließend von berechtigten Lehrpersonen digital eingelöst werden.</p>
 <p>Zentrale Eigenschaften des Systems:</p>
 <ul>
 <li>Vollständige CRUD-Operationen für Gutscheine (Erstellen, Einsehen, Bearbeiten, Löschen)</li>
@@ -156,6 +156,7 @@
 <li>Bestätigungsworkflow für Erstellung und Einlösung</li>
 <li>Archivierungssystem mit Aufbewahrungsfrist</li>
 </ul>
+<hr>
 <doc-anchor-target id="rollenmodell">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#rollenmodell">#</doc-anchor-trigger>
@@ -169,13 +170,17 @@
         <span>Administrator (Direktion / Sekretariat)</span>
     </h3>
 </doc-anchor-target>
+<p>Der erste Administrator-Account wird über eine einmalige Registrierung angelegt. Beim erstmaligen Aufruf des Systems wird automatisch die Registrierungsseite angezeigt. Nach erfolgreicher Registrierung wird dieser Account als Administrator gespeichert und die öffentliche Registrierung dauerhaft deaktiviert. Alle weiteren Benutzer (Administratoren und Lehrpersonen) werden ausschließlich über den Einladungs-Workflow durch einen bestehenden Administrator erstellt.</p>
 <p>Der Administrator verfügt über Vollzugriff auf alle Funktionen des Systems. Im Einzelnen umfasst dies:</p>
 <ul>
-<li>Vollzugriff auf alle Gutscheine (Erstellen, Bearbeiten,  Einsehen, Löschen (auch abgelehnte oder fehlerhafte Gutscheine))</li>
+<li>Vollzugriff auf alle Gutscheine (Erstellen, Bearbeiten,  Einsehen, Löschen sowie Zurücksetzen oder Korrigieren von Gutscheinen bei fehlerhaften Einträgen)</li>
 <li>Verwaltung und Anpassung von Gutschein-Templates</li>
-<li>Vergabe und Entzug von Lehrerberechtigungen zur Gutscheinerstellung</li>
+<li>Vergabe und Entzug von Lehrerberechtigungen zur Gutscheinerstellung und Gutscheineinlösung</li>
+<li>Erstellung von Lehrer-Accounts: Der Administrator legt einen neuen Lehrer mit Name und E-Mail-Adresse an. Das System versendet automatisch eine Einladungs-E-Mail mit einem einmaligen Link zur Passwort-Vergabe. Erst nach Abschluss der Passwort-Vergabe ist der Account aktiv.</li>
 <li>Bestätigung von Gutscheinen nach Erstellung durch Lehrpersonen</li>
+<li>Verwaltung von Schülern (Anlegen, Bearbeiten, Löschen)</li>
 </ul>
+<p>Sollten nachträglich Fehler festgestellt werden (z. B. falscher Empfänger oder falsches Ablaufdatum), kann ein Administrator den Gutschein zurücksetzen oder korrigieren. Dabei wird der Status angepasst und der Gutschein gegebenenfalls erneut zur Bestätigung vorgelegt.</p>
 <doc-anchor-target id="lehrer">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#lehrer">#</doc-anchor-trigger>
@@ -186,16 +191,19 @@
 <ul>
 <li>Erstellung von Gutscheinen (nur mit erteilter Berechtigung durch den Administrator)</li>
 <li>Nicht jede Lehrperson kann Gutscheine erstellen – die Berechtigung wird gezielt vergeben</li>
-<li>Der Klassenvorstand kann Gutscheine von Schülern seiner eigenen Klasse einlösen</li>
+<li>Einlösung von Gutscheinen (nur mit erteilter Berechtigung durch den Administrator)</li>
 <li>Einlösung erfolgt durch Scannen des QR-Codes oder Eingabe der Gutscheinnummer</li>
+<li>Verwaltung von Schülern (Anlegen, Bearbeiten, Löschen)</li>
 </ul>
+<p>Der Lehrer scannt den QR-Code mit der Kamera seines Smartphones – der Link öffnet die Webapp direkt auf der Einlöse-Seite des jeweiligen Gutscheins.</p>
 <doc-anchor-target id="schüler">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#schüler">#</doc-anchor-trigger>
         <span>Schüler</span>
     </h3>
 </doc-anchor-target>
-<p>Schüler haben keinen direkten Zugriff auf das System. Sie sind ausschließlich Empfänger von Gutscheinen, die per E-Mail als PDF zugestellt werden. Ein Schüler wird erst in der Datenbank angelegt, wenn er seinen ersten Gutschein erhält bzw der Lehrer oder Administrator den Gutschein erstellt.</p>
+<p>Schüler haben keinen direkten Zugriff auf das System. Sie sind ausschließlich Empfänger von Gutscheinen, die per E-Mail als PDF zugestellt werden. Ein Schüler wird in der Datenbank angelegt, wenn er vom Administrator oder einer Lehrperson manuell erfasst wird oder bei der Gutschein-Erstellung als neuer Empfänger hinzugefügt wird.</p>
+<p>Eine separate Speicherung der Klassenzugehörigkeit ist für die Funktionsweise des Systems nicht erforderlich, da Gutscheine ausschließlich über die eindeutige Schüler-ID verwaltet werden. Die Klasse kann jedoch beim Erstellen eines Gutscheins über ein Dropdown-Menü ausgewählt und als Platzhalter im Template verwendet werden, ohne dass sie dauerhaft am Schüler gespeichert wird.</p>
 <doc-anchor-target id="berechtigungsmatrix">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#berechtigungsmatrix">#</doc-anchor-trigger>
@@ -228,8 +236,8 @@
 <tr>
 <td>Gutschein einlösen</td>
 <td>✓</td>
-<td>Nur KV</td>
-<td>Übergabe an KV</td>
+<td>Mit Berechtigung</td>
+<td>Übergabe an Lehrer</td>
 </tr>
 <tr>
 <td>Gutschein einsehen</td>
@@ -279,9 +287,28 @@
 <td>–</td>
 <td>✓</td>
 </tr>
+<tr>
+<td>Schüler verwalten</td>
+<td>✓</td>
+<td>✓</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Lehrer-Accounts anlegen</td>
+<td>✓</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Lehrer deaktivieren/löschen</td>
+<td>✓</td>
+<td>–</td>
+<td>–</td>
+</tr>
 </tbody>
 </table>
 </div>
+<hr>
 <doc-anchor-target id="archiv">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#archiv">#</doc-anchor-trigger>
@@ -289,12 +316,27 @@
     </h3>
 </doc-anchor-target>
 <p>Die Archivierung und Löschung von Gutscheinen erfolgt automatisiert. Abgelaufene Gutscheine werden in ein Archiv überführt und nach Ablauf einer definierten Aufbewahrungsfrist endgültig gelöscht. Existieren danach keine archivierten Gutscheine mehr, wird auch der zugehörige Schülereintrag automatisch aus der Datenbank entfernt.</p>
+<hr>
 <doc-anchor-target id="workflow">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#workflow">#</doc-anchor-trigger>
         <span>Workflow</span>
     </h2>
 </doc-anchor-target>
+<doc-anchor-target id="lehrer-account-erstellung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#lehrer-account-erstellung">#</doc-anchor-trigger>
+        <span>Lehrer-Account-Erstellung</span>
+    </h3>
+</doc-anchor-target>
+<p>Die Erstellung von Lehrer-Accounts erfolgt ausschließlich durch den Administrator:</p>
+<ol>
+<li>Der Administrator legt einen neuen Lehrer an und erfasst Name und E-Mail-Adresse.</li>
+<li>Das System versendet automatisch eine Einladungs-E-Mail an die angegebene Adresse. Die E-Mail enthält einen einmaligen Link zur Passwort-Vergabe.</li>
+<li>Der Lehrer öffnet den Link und vergibt sein persönliches Passwort.</li>
+<li>Nach erfolgreicher Passwort-Vergabe ist der Account aktiv und der Lehrer kann sich einloggen.</li>
+<li>Der Einladungslink ist nach einmaliger Nutzung oder nach Ablauf einer definierten Frist ungültig. Bei Bedarf kann der Administrator eine neue Einladung versenden.</li>
+</ol>
 <doc-anchor-target id="gutschein-erstellung">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#gutschein-erstellung">#</doc-anchor-trigger>
@@ -306,6 +348,7 @@
 <li>Eine berechtigte Lehrperson oder ein Administrator erstellt einen neuen Gutschein auf Basis eines vordefinierten Templates (Bearbeitung möglich).</li>
 <li>Der Gutschein erhält einen Status und wird dem Sekretariat bzw. der Direktion zur Bestätigung vorgelegt. Abgelehnte Gutscheine können vom Administrator dauerhaft gelöscht werden, ansonsten wird er archiviert</li>
 <li>Das Sekretariat oder die Direktion prüft den Gutschein und bestätigt oder lehnt ihn ab.</li>
+<li>Bei Ablehnung: Der Gutschein erhält erneut einen Status mit einem Ablehnungsgrund. Der erstellende Lehrer kann den Gutschein korrigieren (z. B. Begründung anpassen, Empfänger ändern) und erneut zur Bestätigung einreichen. Der Status wechselt dann zurück auf „Ausstehend&quot;. Alternativ kann der Administrator den abgelehnten Gutschein dauerhaft löschen.</li>
 <li>Nach der Bestätigung wird der Gutschein automatisch per E-Mail als PDF an den Schüler versendet. Der Status wechselt nach Versand.</li>
 </ol>
 <doc-anchor-target id="stapel-erstellung-mehrere-empfänger">
@@ -317,7 +360,7 @@
 <p>Neben der Erstellung für einzelne Schüler unterstützt das System eine Stapel-Erstellung für mehrere Empfänger (z. B. eine Gruppe von Teilnehmern einer Veranstaltung).</p>
 <ol>
 <li>Der Lehrer/Administrator wählt ein Template und erfasst die gemeinsamen Gutschein-Daten (Begründung, Gültigkeit, optional Zusatztext).</li>
-<li>Es wird eine Empfängerliste gewählt (z. B. Klasse, mehrere ausgewählte Schüler oder Import aus einer Liste).</li>
+<li>Es wird eine Empfängerliste gewählt (z. B. mehrere ausgewählte Schüler oder Import aus einer Liste).</li>
 <li>Das System erzeugt pro Empfänger einen eigenen Gutschein mit eindeutiger Gutschein-ID und QR-Code.</li>
 <li>Die Gutscheine werden gesammelt zur Bestätigung vorgelegt (Batch).</li>
 <li>Nach Bestätigung werden pro Empfänger automatisiert PDF und E-Mail versendet. Versandfehler werden pro Gutschein protokolliert, damit einzelne Empfänger erneut versendet werden können.</li>
@@ -334,6 +377,19 @@
 <li>Das Sekretariat oder die Direktion prüft den Gutschein und bestätigt oder lehnt ihn ab.</li>
 <li>Der Klassenvorstand bestätigt die Einlösung im System. Der Gutschein-Status wieder und Gutschein gelangt in das Archiv.</li>
 </ol>
+<doc-anchor-target id="passwort-zurücksetzung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#passwort-zurücksetzung">#</doc-anchor-trigger>
+        <span>Passwort-Zurücksetzung</span>
+    </h3>
+</doc-anchor-target>
+<p>Lehrpersonen und auch der Admin können ihr Passwort über die „Passwort vergessen“-Funktion zurücksetzen.</p>
+<ol>
+<li>Das System versendet automatisch eine E-Mail mit einem einmaligen Reset-Link.</li>
+<li>Über diesen Link kann ein neues Passwort vergeben werden.</li>
+<li>Der Link ist zeitlich begrenzt und kann nur einmal verwendet werden.</li>
+</ol>
+<hr>
 <doc-anchor-target id="template">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#template">#</doc-anchor-trigger>
@@ -349,6 +405,7 @@
 <li>Optional Logos oder Unterschriften</li>
 <li>Aktiv/Inaktiv-Status ob Template verwendbar ist</li>
 </ul>
+<p>Die Klasse wird nicht am Schüler gespeichert, sondern beim Erstellen eines Gutscheins über ein Dropdown-Menü ausgewählt und als Platzhalter in das Template eingefügt.</p>
 <p>Jeder Gutschein-Typ basiert auf einem vom Administrator konfigurierbaren Template. Templates werden zentral verwaltet und sorgen für eine einheitliche Gestaltung sowie konsistente Inhalte.</p>
 <div class="table-wrapper scrollbar overflow-hidden">
 <table class="comfortable">
@@ -378,6 +435,7 @@
 </tbody>
 </table>
 </div>
+<hr>
 <doc-anchor-target id="gutschein">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#gutschein">#</doc-anchor-trigger>
@@ -390,9 +448,11 @@
 <li>Eindeutige Gutscheinnummer zur Identifikation</li>
 <li>Zuordnung zu Aussteller (Administrator, Lehrperson) und Empfänger (Schüler)</li>
 <li>Individuelle Begründung (z. B. „Ausgezeichneter Erfolg&quot;, „Teilnahme Wettbewerb&quot;)</li>
+<li>Klasse (wird beim Erstellen über Dropdown-Menü ausgewählt, nicht am Schüler gespeichert)</li>
 <li>Ausstellungsdatum und optionales Ablaufdatum</li>
 <li>QR-Code zur Einlösung</li>
 </ul>
+<hr>
 <doc-anchor-target id="statusübergänge">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#statusübergänge">#</doc-anchor-trigger>
@@ -462,77 +522,7 @@
 </tbody>
 </table>
 </div>
-<doc-anchor-target id="technische-umsetzung">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#technische-umsetzung">#</doc-anchor-trigger>
-        <span>Technische Umsetzung</span>
-    </h2>
-</doc-anchor-target>
-<doc-anchor-target id="datenbankmodell">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#datenbankmodell">#</doc-anchor-trigger>
-        <span>Datenbankmodell</span>
-    </h3>
-</doc-anchor-target>
-<doc-anchor-target id="allgemeines-ui-konzept">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#allgemeines-ui-konzept">#</doc-anchor-trigger>
-        <span>Allgemeines UI-Konzept</span>
-    </h2>
-</doc-anchor-target>
-<p>Die Benutzeroberfläche ist rollenbasiert aufgebaut, wobei nur die für die jeweilige Rolle relevanten Funktionen angezeigt werden.</p>
-<doc-anchor-target id="layout-und-navigation">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#layout-und-navigation">#</doc-anchor-trigger>
-        <span>Layout und Navigation</span>
-    </h3>
-</doc-anchor-target>
-<doc-anchor-target id="benutzeroberfläche-administratoren">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#benutzeroberfläche-administratoren">#</doc-anchor-trigger>
-        <span>Benutzeroberfläche Administratoren</span>
-    </h4>
-</doc-anchor-target>
-<p><strong>Navigation:</strong></p>
-<ul>
-<li>Dashboard</li>
-<li>Gutscheine (Suchfunktion Gutscheine, alle Gutscheine einsehen, selbst erstelle Gutscheine einsehen, Gutscheine erstellen)</li>
-<li>Templates</li>
-<li>Benutzer/Berechtigungen</li>
-<li>Archiv</li>
-</ul>
-<p><strong>Funktionen im Detail:</strong></p>
-<p><strong>Dashboard</strong></p>
-<ul>
-<li>Gesamtübersicht über Gutscheine nach Status, Anzahl ausstehender Bestätigungen</li>
-<li>Schnellzugriff auf zuletzt erstellte Gutscheine</li>
-<li>Hinweise auf ablaufende oder abgelaufene Gutscheine</li>
-</ul>
-<doc-anchor-target id="benutzeroberfläche-lehrer">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#benutzeroberfläche-lehrer">#</doc-anchor-trigger>
-        <span>Benutzeroberfläche Lehrer</span>
-    </h4>
-</doc-anchor-target>
-<p><strong>Navigation:</strong></p>
-<ul>
-<li>Dashboard</li>
-<li>Gutscheine (Suchfunktion Gutscheine, selbst erstelle Gutscheine, Gutschein erstellen)</li>
-<li>Templates personalisieren</li>
-<li>Gutschein einlösen</li>
-</ul>
-<p><strong>Funktionen im Detail:</strong></p>
-<p>Todo:
-UI Konzept erweitern</p>
-<p>Zurücksetzen des Gutscheins bzw Umänderung im Nachinein
-Kv bekommt nur das Recht Gutscheine bestätigen zu können,</p>
-<doc-anchor-target id="bisherige-umsetzung">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#bisherige-umsetzung">#</doc-anchor-trigger>
-        <span>Bisherige Umsetzung</span>
-    </h3>
-</doc-anchor-target>
-<p>Das Laravel-Projekt wurde initialisiert und die Pakete Fortify (Authentifizierung) sowie Sanctum (API-Token-Verwaltung) eingebunden. Anschließend wurden drei Datenbankmigrationen erstellt: Die <code translate="no" v-pre>users</code>-Tabelle wurde um Felder für Rolle, Klassenzugehörigkeit, Matrikelnummer und Berechtigungen erweitert. Die Tabelle <code translate="no" v-pre>voucher_rules</code> speichert die konfigurierbaren Gutschein-Vorlagen (Typ, Menge, Einheit, Gültigkeitsdauer). Die Tabelle <code translate="no" v-pre>vouchers</code> bildet die einzelnen ausgestellten Gutscheine ab – inklusive Status-Verwaltung (aktiv, eingelöst, abgelaufen, ungültig), Archivierung mit Aufbewahrungsfrist und Nachverfolgung der Einlösung.</p>
+<hr>
 <doc-anchor-target id="vorbereitung">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#vorbereitung">#</doc-anchor-trigger>
@@ -555,7 +545,7 @@ Kv bekommt nur das Recht Gutscheine bestätigen zu können,</p>
                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                             <span>
                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                <span class="block mt-1">Dokumentation vom 18. Februar 2026</span>
+                                <span class="block mt-1">Doku 18. Februar 2026</span>
                             </span>
                         </a>
                     </div>
@@ -601,6 +591,6 @@ Kv bekommt nur das Recht Gutscheine bestätigen zu können,</p>
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Dokumentation vom 25. Februar 2026", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Doku 25. Februar 2026", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
