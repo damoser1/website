@@ -8,7 +8,7 @@ date: 25. Februar 2026
 
 ## Grundkonzept
 
-Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können. Die Gutscheine werden auf Basis konfigurierbarer Templates generiert, per E-Mail als PDF mit QR-Code an die Schüler versendet und können anschließend vom Klassenvorstand digital eingelöst werden.
+Das Projekt ist ein schulinternes Gutscheinsystem, mit dem Gutscheine für Schüler erstellt, verwaltet und eingelöst werden können. Die Gutscheine werden auf Basis konfigurierbarer Templates generiert, per E-Mail als PDF mit QR-Code an die Schüler versendet und können anschließend von berechtigten Lehrpersonen digital eingelöst werden.
 
 Zentrale Eigenschaften des Systems:
 
@@ -20,6 +20,8 @@ Zentrale Eigenschaften des Systems:
 - Bestätigungsworkflow für Erstellung und Einlösung
 - Archivierungssystem mit Aufbewahrungsfrist
 
+---
+
 ## Rollenmodell
 
 Das System unterscheidet drei Benutzerrollen mit klar abgegrenzten Berechtigungen.
@@ -28,11 +30,13 @@ Das System unterscheidet drei Benutzerrollen mit klar abgegrenzten Berechtigunge
 
 Der Administrator verfügt über Vollzugriff auf alle Funktionen des Systems. Im Einzelnen umfasst dies:
 
-- Vollzugriff auf alle Gutscheine (Erstellen, Bearbeiten,  Einsehen, Löschen (auch abgelehnte oder fehlerhafte Gutscheine))
+- Vollzugriff auf alle Gutscheine (Erstellen, Bearbeiten,  Einsehen, Löschen sowie Zurücksetzen oder Korrigieren von Gutscheinen bei fehlerhaften Einträgen)
 - Verwaltung und Anpassung von Gutschein-Templates 
 - Vergabe und Entzug von Lehrerberechtigungen zur Gutscheinerstellung
 - Bestätigung von Gutscheinen nach Erstellung durch Lehrpersonen
+- Verwaltung von Schülern (Anlegen, Bearbeiten, Löschen)
 
+Sollten nachträglich Fehler festgestellt werden (z. B. falscher Empfänger oder falsches Ablaufdatum), kann ein Administrator den Gutschein zurücksetzen oder korrigieren. Dabei wird der Status angepasst und der Gutschein gegebenenfalls erneut zur Bestätigung vorgelegt.
 
 ### Lehrer
 
@@ -40,12 +44,16 @@ Lehrpersonen haben eingeschränkte Rechte, die vom Administrator individuell ver
 
 - Erstellung von Gutscheinen (nur mit erteilter Berechtigung durch den Administrator)
 - Nicht jede Lehrperson kann Gutscheine erstellen – die Berechtigung wird gezielt vergeben
-- Der Klassenvorstand kann Gutscheine von Schülern seiner eigenen Klasse einlösen
+- Einlösung von Gutscheinen (nur mit erteilter Berechtigung durch den Administrator)
 - Einlösung erfolgt durch Scannen des QR-Codes oder Eingabe der Gutscheinnummer
+
+Der Lehrer scannt den QR-Code mit der Kamera seines Smartphones – der Link öffnet die Webapp direkt auf der Einlöse-Seite des jeweiligen Gutscheins.
 
 ### Schüler
 
-Schüler haben keinen direkten Zugriff auf das System. Sie sind ausschließlich Empfänger von Gutscheinen, die per E-Mail als PDF zugestellt werden. Ein Schüler wird erst in der Datenbank angelegt, wenn er seinen ersten Gutschein erhält bzw der Lehrer oder Administrator den Gutschein erstellt.
+Schüler haben keinen direkten Zugriff auf das System. Sie sind ausschließlich Empfänger von Gutscheinen, die per E-Mail als PDF zugestellt werden. Ein Schüler wird in der Datenbank angelegt, wenn er vom Administrator oder einer Lehrperson manuell erfasst wird oder bei der Gutschein-Erstellung als neuer Empfänger hinzugefügt wird.
+
+Eine separate Speicherung der Klassenzugehörigkeit ist für die Funktionsweise des Systems nicht erforderlich, da Gutscheine ausschließlich über die eindeutige Schüler-ID verwaltet werden. Die Klasse kann jedoch beim Erstellen eines Gutscheins über ein Dropdown-Menü ausgewählt und als Platzhalter im Template verwendet werden, ohne dass sie dauerhaft am Schüler gespeichert wird.
 
 ### Berechtigungsmatrix
 
@@ -53,7 +61,7 @@ Schüler haben keinen direkten Zugriff auf das System. Sie sind ausschließlich 
 |--------------------------|---------------|------------------------|----------------|
 | Gutschein erstellen      | ✓             | Mit Berechtigung       | –              |
 | Gutschein bestätigen     | ✓             | –                      | –              |
-| Gutschein einlösen       | ✓             | Nur KV                 | Übergabe an KV |
+| Gutschein einlösen       | ✓             | Mit Berechtigung       | Übergabe an Lehrer |
 | Gutschein einsehen       | Alle          | Selbst erstellte       | –              |
 | Templates erstellen      | ✓             | –                            | –      |
 | Templates verwalten      | ✓             | –                            | –      |
@@ -62,10 +70,14 @@ Schüler haben keinen direkten Zugriff auf das System. Sie sind ausschließlich 
 | Berechtigungen vergeben  | ✓             | –                      | –              |
 | Archiv & Löschrechte     | ✓             | –                      | –              |
 | Gutschein empfangen      | –             | –                      | ✓              |
+| Schüler verwalten        | ✓             | ✓                      | –              |
+
+---
 
 ### Archiv
 Die Archivierung und Löschung von Gutscheinen erfolgt automatisiert. Abgelaufene Gutscheine werden in ein Archiv überführt und nach Ablauf einer definierten Aufbewahrungsfrist endgültig gelöscht. Existieren danach keine archivierten Gutscheine mehr, wird auch der zugehörige Schülereintrag automatisch aus der Datenbank entfernt.
 
+---
 
 ## Workflow
 
@@ -83,7 +95,7 @@ Der Erstellungsprozess durchläuft mehrere Schritte mit einem Bestätigungsmecha
 Neben der Erstellung für einzelne Schüler unterstützt das System eine Stapel-Erstellung für mehrere Empfänger (z. B. eine Gruppe von Teilnehmern einer Veranstaltung).
 
 1. Der Lehrer/Administrator wählt ein Template und erfasst die gemeinsamen Gutschein-Daten (Begründung, Gültigkeit, optional Zusatztext).
-2. Es wird eine Empfängerliste gewählt (z. B. Klasse, mehrere ausgewählte Schüler oder Import aus einer Liste).
+2. Es wird eine Empfängerliste gewählt (z. B. mehrere ausgewählte Schüler oder Import aus einer Liste).
 3. Das System erzeugt pro Empfänger einen eigenen Gutschein mit eindeutiger Gutschein-ID und QR-Code.
 4. Die Gutscheine werden gesammelt zur Bestätigung vorgelegt (Batch).
 5. Nach Bestätigung werden pro Empfänger automatisiert PDF und E-Mail versendet. Versandfehler werden pro Gutschein protokolliert, damit einzelne Empfänger erneut versendet werden können.
@@ -97,6 +109,8 @@ Die Einlösung eines Gutscheins erfolgt ausschließlich durch den Klassenvorstan
 3. Der Klassenvorstand bestätigt die Einlösung im System. Der Gutschein-Status wieder und Gutschein gelangt in das Archiv.
 
 
+---
+
 ## Template
 
 Ein Gutschein-Template definiert den festen Aufbau und das Erscheinungsbild eines Gutscheins und ermöglicht eine standardisierte Erstellung.
@@ -108,6 +122,8 @@ Eigenschaften:
 - Optional Logos oder Unterschriften
 - Aktiv/Inaktiv-Status ob Template verwendbar ist
 
+Die Klasse wird nicht am Schüler gespeichert, sondern beim Erstellen eines Gutscheins über ein Dropdown-Menü ausgewählt und als Platzhalter in das Template eingefügt.
+
 Jeder Gutschein-Typ basiert auf einem vom Administrator konfigurierbaren Template. Templates werden zentral verwaltet und sorgen für eine einheitliche Gestaltung sowie konsistente Inhalte.
 
 | Template          | Beschreibung                                  |
@@ -117,6 +133,8 @@ Jeder Gutschein-Typ basiert auf einem vom Administrator konfigurierbaren Templat
 | Ganzer Tag frei   | Freistellung für einen gesamten Schultag      |
 | 2 Tage frei       | Freistellung für zwei gesamte Schultage       |
 
+---
+
 ## Gutschein
 
 Ein Gutschein nutzt ein konkretes Template und enthält individuelle, schülerbezogene Informationen.
@@ -125,8 +143,11 @@ Ein Gutschein nutzt ein konkretes Template und enthält individuelle, schülerbe
 - Eindeutige Gutscheinnummer zur Identifikation
 - Zuordnung zu Aussteller (Administrator, Lehrperson) und Empfänger (Schüler)
 - Individuelle Begründung (z. B. „Ausgezeichneter Erfolg", „Teilnahme Wettbewerb")
+- Klasse (wird beim Erstellen über Dropdown-Menü ausgewählt, nicht am Schüler gespeichert)
 - Ausstellungsdatum und optionales Ablaufdatum
 - QR-Code zur Einlösung
+
+---
 
 ## Statusübergänge
 
@@ -143,59 +164,8 @@ Ein Gutschein durchläuft während seines Lebenszyklus mehrere definierte Status
 | Archiviert   | Im Archiv                        | System/Admin  | Gelöscht                    |
 | Gelöscht     | endgültig entfernt               | System/Admin  | –                           |
 
-## Technische Umsetzung
-
-### Datenbankmodell
-
-
-## Allgemeines UI-Konzept
-
-Die Benutzeroberfläche ist rollenbasiert aufgebaut, wobei nur die für die jeweilige Rolle relevanten Funktionen angezeigt werden. 
-
-### Layout und Navigation
-
-#### Benutzeroberfläche Administratoren
-
-**Navigation:**
-
-- Dashboard
-- Gutscheine (Suchfunktion Gutscheine, alle Gutscheine einsehen, selbst erstelle Gutscheine einsehen, Gutscheine erstellen)
-- Templates
-- Benutzer/Berechtigungen
-- Archiv
-
-**Funktionen im Detail:**
-
-**Dashboard**
-- Gesamtübersicht über Gutscheine nach Status, Anzahl ausstehender Bestätigungen
-- Schnellzugriff auf zuletzt erstellte Gutscheine
-- Hinweise auf ablaufende oder abgelaufene Gutscheine
-
-
-
-#### Benutzeroberfläche Lehrer
-
-**Navigation:**
-
-- Dashboard
-- Gutscheine (Suchfunktion Gutscheine, selbst erstelle Gutscheine, Gutschein erstellen)
-- Templates personalisieren
-- Gutschein einlösen
-
-**Funktionen im Detail:**
-
-
-Todo:
-UI Konzept erweitern
-
-Zurücksetzen des Gutscheins bzw Umänderung im Nachinein
-Kv bekommt nur das Recht Gutscheine bestätigen zu können, 
-
-### Bisherige Umsetzung
-
-Das Laravel-Projekt wurde initialisiert und die Pakete Fortify (Authentifizierung) sowie Sanctum (API-Token-Verwaltung) eingebunden. Anschließend wurden drei Datenbankmigrationen erstellt: Die `users`-Tabelle wurde um Felder für Rolle, Klassenzugehörigkeit, Matrikelnummer und Berechtigungen erweitert. Die Tabelle `voucher_rules` speichert die konfigurierbaren Gutschein-Vorlagen (Typ, Menge, Einheit, Gültigkeitsdauer). Die Tabelle `vouchers` bildet die einzelnen ausgestellten Gutscheine ab – inklusive Status-Verwaltung (aktiv, eingelöst, abgelaufen, ungültig), Archivierung mit Aufbewahrungsfrist und Nachverfolgung der Einlösung.
+---
 
 ### Vorbereitung
-
 
 - Projektstruktur angelegt und Konzept inkl. Datenbankmodell erarbeitet (angefangen)
