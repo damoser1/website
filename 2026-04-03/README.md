@@ -1,14 +1,10 @@
 ---
 author: David Moser
-label: Doku 04. März 2026
+label: 04. März 2026
 date: 04. März 2026
 ---
 
 # Technische Umsetzung
-
-## Datenbankmodell
-
-...
 
 ## Allgemeines UI-Konzept
 
@@ -192,8 +188,104 @@ Beim erstmaligen Aufruf des Systems (kein Benutzer vorhanden) wird automatisch d
 
 ---
 
+## Datenbankmodell
+
+Das Datenbankmodell bildet alle Entitäten des Gutscheinsystems ab. Die Tabellen sind so gestaltet, dass sie die rollenbasierte Struktur, den Gutschein-Lebenszyklus mit Statusübergängen, das Template-System und die Archivierungslogik vollständig unterstützen.
+
+### Übersicht der Tabellen
+
+| Tabelle                    | Beschreibung                                                        |
+|----------------------------|---------------------------------------------------------------------|
+| `users`                    | Administratoren und Lehrpersonen mit Rolle und Berechtigungen       |
+| `students`                 | Schüler als Gutschein-Empfänger                                     |
+| `voucher_templates`        | Vom Administrator konfigurierbare Gutschein-Vorlagen                |
+| `personalized_templates`   | Individuelle Template-Kopien von Lehrpersonen                       |
+| `vouchers`                 | Einzelne ausgestellte Gutscheine mit Status und Zuordnung           |
+
+### Tabelle für die Nutzer `users`
+
+Speichert alle Benutzer des Systems (Administrator und Lehrpersonen). Schüler werden in einer eigenen Tabelle verwaltet.
+
+| Feld                    | Typ              | Beschreibung                                              |
+|-------------------------|------------------|-----------------------------------------------------------|
+| `id`                    | BIGINT (PK)      | Primärschlüssel                                           |
+| `name`                  | VARCHAR(255)     | Vollständiger Name                                        |
+| `email`                 | VARCHAR(255), UQ | E-Mail-Adresse (eindeutig)                                |
+| `password`              | VARCHAR(255), NULL | Passwort-Hash (NULL bei eingeladenen, noch nicht aktivierten Accounts) |
+| `role`                  | ENUM             | Rolle: `admin`, `teacher`                                 |
+| `can_create_vouchers`   | BOOLEAN          | Berechtigung zur Gutscheinerstellung (Standard: false)    |
+| `can_redeem_vouchers`   | BOOLEAN          | Berechtigung zur Gutscheineinlösung (Standard: false)     |
+| `status`                | ENUM             | Account-Status: `invited`, `active`, `deactivated`        |
+| `invitation_token`      | VARCHAR(255), NULL | Einmaliger Token für den Einladungslink                  |
+| `invitation_expires_at` | TIMESTAMP, NULL  | Ablaufzeitpunkt des Einladungslinks                       |
 
 
-Passwort Reset für Lehrer???
-Sinnvoll ersten Admin account im seeder erstellen oder gleich in der Datenbank?
-Wenn bestätigt, dann wird gutschein geschickt? wenn korrigiert, nicht mehr einlösbar, wie erfährt der Schüler das?
+### Tabelle für die Schüler `students`
+
+Speichert die Schüler als Gutschein-Empfänger. Die Klassenzugehörigkeit wird nicht am Schüler gespeichert.
+
+| Feld          | Typ              | Beschreibung                                              |
+|---------------|------------------|-----------------------------------------------------------|
+| `id`          | BIGINT (PK)      | Primärschlüssel                                           |
+| `name`        | VARCHAR(255)     | Vollständiger Name                                        |
+| `email`       | VARCHAR(255), UQ | E-Mail-Adresse (eindeutig)                                |
+| `created_by`  | BIGINT (FK)      | Referenz auf `users.id` – wer den Schüler angelegt hat    |
+
+### Tabelle für die Gutschein-Vorlagen `voucher_templates` des Administrators
+
+Speichert die vom Administrator erstellten Gutschein-Vorlagen.
+
+| Feld                  | Typ              | Beschreibung                                              |
+|-----------------------|------------------|-----------------------------------------------------------|
+| `id`                  | BIGINT (PK)      | Primärschlüssel                                           |
+| `name`                | VARCHAR(255)     | Name des Templates (z. B. „Nachmittag frei")              |
+| `description`         | TEXT, NULL        | Beschreibung des Templates                                |
+| `content`             | TEXT             | Textaufbau mit Platzhaltern (`{Name}`, `{Klasse}`, etc.)  |
+| `validity_days`       | INT, NULL        | Standard-Gültigkeitsdauer in Tagen                        |
+| `logo_path`           | VARCHAR(255), NULL | Pfad zum hochgeladenen Logo                              |
+| `signature_path`      | VARCHAR(255), NULL | Pfad zur hochgeladenen Unterschrift                      |
+| `is_active`           | BOOLEAN          | Ob das Template verwendbar ist (Standard: true)           |
+
+### Tabelle für die Personalisierung von Gutschein-Vorlagen `personalized_templates` des Lehrers
+
+Speichert individuelle Anpassungen von Templates durch Lehrpersonen. Beim Personalisieren wird der gesamte Textaufbau des Basis-Templates als vollständige Kopie übernommen. Der Lehrer kann den Text anschließend frei anpassen (Formulierungen ändern, Abschnitte umschreiben, Reihenfolge anpassen). Das Basis-Template bleibt unverändert. Ändert der Administrator das Basis-Template nachträglich, werden bestehende Personalisierungen davon nicht beeinflusst. Pro Lehrer und Basis-Template existiert maximal eine Personalisierung.
+
+| Feld                  | Typ              | Beschreibung                                              |
+|-----------------------|------------------|-----------------------------------------------------------|
+| `id`                  | BIGINT (PK)      | Primärschlüssel                                           |
+| `base_template_id`    | BIGINT (FK)      | Referenz auf `voucher_templates.id`                       |
+| `teacher_id`          | BIGINT (FK)      | Referenz auf `users.id` – Lehrperson                      |
+| `content`             | TEXT             | Angepasster Textaufbau                                    |
+
+
+### Tabelle für die Gutschein `vouchers`
+
+Speichert die einzelnen ausgestellten Gutscheine mit allen individuellen Daten und dem aktuellen Status.
+
+| Feld                       | Typ              | Beschreibung                                              |
+|----------------------------|------------------|-----------------------------------------------------------|
+| `id`                       | BIGINT (PK)      | Primärschlüssel                                           |
+| `voucher_number`           | VARCHAR(255), UQ | Eindeutige Gutscheinnummer                                |
+| `template_id`              | BIGINT (FK)      | Referenz auf `voucher_templates.id`                       |
+| `personalized_template_id` | BIGINT (FK), NULL| Referenz auf `personalized_templates.id` (optional)       |
+| `issuer_id`                | BIGINT (FK)      | Referenz auf `users.id` – Aussteller                      |
+| `student_id`               | BIGINT (FK)      | Referenz auf `students.id` – Empfänger                    |
+| `class_name`               | VARCHAR(255), NULL | Klasse als Freitexteingabe zum Zeitpunkt der Erstellung |
+| `reason`                   | TEXT             | Begründung (Pflichtfeld)                                  |
+| `additional_text`          | TEXT, NULL       | Optionaler Zusatztext                                     |
+| `qr_token`                 | VARCHAR(255), UQ | Eindeutiger Token für den QR-Code-Link zur Einlösung      |
+| `status`                   | ENUM             | Aktueller Status (siehe Statusübergänge)                  |
+| `rejection_reason`         | TEXT, NULL       | Ablehnungsgrund (bei Status `rejected`)                   |
+| `batch_id`                 | VARCHAR(255), NULL | Batch-Kennung bei Stapel-Erstellung                     |
+| `issued_at`                | TIMESTAMP, NULL  | Ausstellungsdatum (nach Bestätigung)                      |
+| `expires_at`               | TIMESTAMP, NULL  | Ablaufdatum                                               |
+| `sent_at`                  | TIMESTAMP, NULL  | Zeitpunkt des E-Mail-Versands                             |
+| `redeemed_at`              | TIMESTAMP, NULL  | Zeitpunkt der Einlösung                                   |
+| `redeemed_by`              | BIGINT (FK), NULL| Referenz auf `users.id` – wer eingelöst hat               |
+| `archived_at`              | TIMESTAMP, NULL  | Zeitpunkt der Archivierung                                |
+| `retention_until`          | TIMESTAMP, NULL  | Ende der Aufbewahrungsfrist (danach Löschung)             |
+
+
+### Beziehungen (ER-Übersicht)
+
+
