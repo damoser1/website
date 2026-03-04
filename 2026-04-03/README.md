@@ -4,9 +4,11 @@ label: Doku 04. März 2026
 date: 04. März 2026
 ---
 
-## Technische Umsetzung
+# Technische Umsetzung
 
-### Datenbankmodell
+## Datenbankmodell
+
+...
 
 ## Allgemeines UI-Konzept
 
@@ -15,7 +17,16 @@ Nach dem Login wird der Benutzer automatisch auf das rollenspezifische Dashboard
 
 ---
 
-#### Benutzeroberfläche Administratoren
+### Ersteinrichtung
+
+Beim erstmaligen Aufruf des Systems (kein Benutzer vorhanden) wird automatisch die Registrierungsseite angezeigt:
+
+- Nach erfolgreicher Registrierung wird der Account als Administrator gespeichert und der Benutzer auf das Admin-Dashboard weitergeleitet
+- Die Registrierungsseite ist danach dauerhaft deaktiviert und nicht mehr erreichbar. Bei erneutem Aufruf der URL erfolgt eine Weiterleitung auf die Login-Seite.
+
+---
+
+### Benutzeroberfläche Administratoren
 
 **Navigation:**
 
@@ -51,7 +62,7 @@ Nach dem Login wird der Benutzer automatisch auf das rollenspezifische Dashboard
     - Bestätigt: „Erneut senden" (bei Versandfehler)
     - Gesendet: „Einlösen" / „Als abgelaufen markieren"
     - Abgelehnt: „Dauerhaft löschen"
-- Möglichkeit zur nachträglichen Bearbeitung solange der Gutschein noch nicht eingelöst ist
+- Zurücksetzten einen bereits gesendeten Gutschein zurück (z. B. bei fehlerhaften Angaben). Möglichkeit zur nachträglichen Bearbeitung solange der Gutschein noch nicht  eingelöst wurde.
 
 **Gutscheine - Erstellen**
 
@@ -62,11 +73,13 @@ Nach dem Login wird der Benutzer automatisch auf das rollenspezifische Dashboard
 - **Schritt 3**: Gutschein Daten erfassen (Pflicht- und Optionalfelder)
 - **Schritt 4**: Vorschau des fertigen Gutscheins (PDF-Vorschau) oder Stapelansicht einer Zusammenfassung
 - **Schritt 5** Absenden zur Bestätigung (Status wird gesetzt)
+- Bei Stapel-Erstellung wird eine Zusammenfassung angezeigt vor dem Absenden
 
 **Gutscheine - Bestätigungsansicht**
 
 - Liste aller Gutscheine mit Status „Ausstehend", gruppiert nach Einzel- und Stapel-Erstellungen
 - Bei Stapel-Gutscheinen: Anzeige mit Möglichkeit, den gesamten Batch oder einzelne Gutscheine zu bestätigen/abzulehnen
+- Ablehnungsgrund als Pflichtfeld bei Ablehnung
 - Nach Bestätigung: automatischer Versand wird ausgelöst, Statusanzeige aktualisiert sich
 
 **Templates**
@@ -90,12 +103,21 @@ Nach dem Login wird der Benutzer automatisch auf das rollenspezifische Dashboard
 - Schüler löschen: Nur möglich, wenn keine aktiven Gutscheine mehr vorhanden sind. Archivierte Gutscheine werden dabei mitgelöscht.
 - Hinweis: Schüler werden auch automatisch angelegt, wenn sie bei der Gutschein-Erstellung als neuer Empfänger erfasst werden
 
-**Benutzer / Berechtigungen**
+**Benutzer / Berechtigungen Lehrer Übersicht**
 
-- Übersicht aller Lehrpersonen und ob Berechtigung vorhanden ist
-- Berechtigung zur Gutscheinerstellung vergeben/entziehen
-- Berechtigung zur Gutscheineinlösung vergeben/entziehen
+- Übersicht aller Benutzer (Administor und Lehrpersonen) und ob Berechtigung vorhanden ist
+- Berechtigungen zur Gutscheinerstellung und Gutschein-Einlösung vergeben/entziehen
+- Möglichkeit, Accounts zu deaktivieren. Der Lehrer kann sich nicht mehr einloggen, seine Gutscheine bleiben erhalten. Ein deaktivierter Account kann jederzeit wieder aktiviert werden.
+- Löschen eines Accounts auch möglich. Nur möglich, wenn keine aktiven Gutscheine mit diesem Lehrer als Aussteller verknüpft sind. Bestätigungsdialog vor dem Löschen.
 - Hinweis: Schülerverwaltung erfolgt über den eigenen Menüpunkt
+
+**Benutzer / Berechtigungen Lehrer anlegen**
+
+- Anlegen eines Lehrers
+- Optionale Zuweisung von Berechtigungen direkt beim Anlegen (Gutscheinerstellung, Gutscheineinlösung) – können auch nachträglich in der Übersicht vergeben werden
+- Nach dem Absenden: System versendet automatisch eine Einladungs-E-Mail mit einmaligem Link zur Passwort-Vergabe
+- Der neue Lehrer erscheint in der Übersicht mit Status „Eingeladen"
+- Button „Erneut einladen": Für Lehrer mit Status „Eingeladen", deren Link abgelaufen ist – versendet eine neue Einladungs-E-Mail
 
 **Archiv**
 
@@ -121,7 +143,14 @@ Nach dem Login wird der Benutzer automatisch auf das rollenspezifische Dashboard
 
 - Übersicht der eigenen Gutscheine nach Status
 - Schnellzugriff auf zuletzt erstellte eigene Gutscheine
+- Hinweis auf abgelehnte Gutscheine mit Ablehnungsgrund und direktem Link zur Korrektur
 - Für Lehrer mit Einlöse-Berechtigung: Anzahl offener Gutscheine
+
+**Meine Gutscheine - Übersicht**
+
+- Ansicht aller seblsterstellten Gutschein
+- Filter und Suchfunktion
+- Bei abgelehnten Gutscheinen: Anzeige des Ablehnungsgrunds und Button „Korrigieren und erneut einreichen". Öffnet den Gutschein im Bearbeitungsmodus . Nach dem Absenden wechselt der Status zurück auf „Ausstehend".
 
 **Meine Gutscheine - Erstellen**
 
@@ -162,3 +191,9 @@ Nach dem Login wird der Benutzer automatisch auf das rollenspezifische Dashboard
 - Bestätigungsbutton: „Einlösung bestätigen" → Status wechselt, Gutschein wird archiviert
 
 ---
+
+
+
+Passwort Reset für Lehrer???
+Sinnvoll ersten Admin account im seeder erstellen oder gleich in der Datenbank?
+Wenn bestätigt, dann wird gutschein geschickt? wenn korrigiert, nicht mehr einlösbar, wie erfährt der Schüler das?

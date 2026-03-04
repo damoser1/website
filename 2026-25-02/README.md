@@ -28,11 +28,14 @@ Das System unterscheidet drei Benutzerrollen mit klar abgegrenzten Berechtigunge
 
 ### Administrator (Direktion / Sekretariat)
 
+Der erste Administrator-Account wird über eine einmalige Registrierung angelegt. Beim erstmaligen Aufruf des Systems wird automatisch die Registrierungsseite angezeigt. Nach erfolgreicher Registrierung wird dieser Account als Administrator gespeichert und die öffentliche Registrierung dauerhaft deaktiviert. Alle weiteren Benutzer (Administratoren und Lehrpersonen) werden ausschließlich über den Einladungs-Workflow durch einen bestehenden Administrator erstellt.
+
 Der Administrator verfügt über Vollzugriff auf alle Funktionen des Systems. Im Einzelnen umfasst dies:
 
 - Vollzugriff auf alle Gutscheine (Erstellen, Bearbeiten,  Einsehen, Löschen sowie Zurücksetzen oder Korrigieren von Gutscheinen bei fehlerhaften Einträgen)
 - Verwaltung und Anpassung von Gutschein-Templates 
-- Vergabe und Entzug von Lehrerberechtigungen zur Gutscheinerstellung
+- Vergabe und Entzug von Lehrerberechtigungen zur Gutscheinerstellung und Gutscheineinlösung
+- Erstellung von Lehrer-Accounts: Der Administrator legt einen neuen Lehrer mit Name und E-Mail-Adresse an. Das System versendet automatisch eine Einladungs-E-Mail mit einem einmaligen Link zur Passwort-Vergabe. Erst nach Abschluss der Passwort-Vergabe ist der Account aktiv.
 - Bestätigung von Gutscheinen nach Erstellung durch Lehrpersonen
 - Verwaltung von Schülern (Anlegen, Bearbeiten, Löschen)
 
@@ -46,6 +49,7 @@ Lehrpersonen haben eingeschränkte Rechte, die vom Administrator individuell ver
 - Nicht jede Lehrperson kann Gutscheine erstellen – die Berechtigung wird gezielt vergeben
 - Einlösung von Gutscheinen (nur mit erteilter Berechtigung durch den Administrator)
 - Einlösung erfolgt durch Scannen des QR-Codes oder Eingabe der Gutscheinnummer
+- Verwaltung von Schülern (Anlegen, Bearbeiten, Löschen)
 
 Der Lehrer scannt den QR-Code mit der Kamera seines Smartphones – der Link öffnet die Webapp direkt auf der Einlöse-Seite des jeweiligen Gutscheins.
 
@@ -71,6 +75,8 @@ Eine separate Speicherung der Klassenzugehörigkeit ist für die Funktionsweise 
 | Archiv & Löschrechte     | ✓             | –                      | –              |
 | Gutschein empfangen      | –             | –                      | ✓              |
 | Schüler verwalten        | ✓             | ✓                      | –              |
+| Lehrer-Accounts anlegen  | ✓             | –                            | –              |
+| Lehrer deaktivieren/löschen | ✓          | –                            | –              |
 
 ---
 
@@ -81,6 +87,16 @@ Die Archivierung und Löschung von Gutscheinen erfolgt automatisiert. Abgelaufen
 
 ## Workflow
 
+### Lehrer-Account-Erstellung
+
+Die Erstellung von Lehrer-Accounts erfolgt ausschließlich durch den Administrator:
+
+1. Der Administrator legt einen neuen Lehrer an und erfasst Name und E-Mail-Adresse.
+2. Das System versendet automatisch eine Einladungs-E-Mail an die angegebene Adresse. Die E-Mail enthält einen einmaligen Link zur Passwort-Vergabe.
+3. Der Lehrer öffnet den Link und vergibt sein persönliches Passwort.
+4. Nach erfolgreicher Passwort-Vergabe ist der Account aktiv und der Lehrer kann sich einloggen.
+5. Der Einladungslink ist nach einmaliger Nutzung oder nach Ablauf einer definierten Frist ungültig. Bei Bedarf kann der Administrator eine neue Einladung versenden.
+
 ### Gutschein-Erstellung
 
 Der Erstellungsprozess durchläuft mehrere Schritte mit einem Bestätigungsmechanismus:
@@ -88,7 +104,8 @@ Der Erstellungsprozess durchläuft mehrere Schritte mit einem Bestätigungsmecha
 1. Eine berechtigte Lehrperson oder ein Administrator erstellt einen neuen Gutschein auf Basis eines vordefinierten Templates (Bearbeitung möglich).
 2. Der Gutschein erhält einen Status und wird dem Sekretariat bzw. der Direktion zur Bestätigung vorgelegt. Abgelehnte Gutscheine können vom Administrator dauerhaft gelöscht werden, ansonsten wird er archiviert
 3. Das Sekretariat oder die Direktion prüft den Gutschein und bestätigt oder lehnt ihn ab.
-4. Nach der Bestätigung wird der Gutschein automatisch per E-Mail als PDF an den Schüler versendet. Der Status wechselt nach Versand.
+4. Bei Ablehnung: Der Gutschein erhält erneut einen Status mit einem Ablehnungsgrund. Der erstellende Lehrer kann den Gutschein korrigieren (z. B. Begründung anpassen, Empfänger ändern) und erneut zur Bestätigung einreichen. Der Status wechselt dann zurück auf „Ausstehend". Alternativ kann der Administrator den abgelehnten Gutschein dauerhaft löschen.
+5. Nach der Bestätigung wird der Gutschein automatisch per E-Mail als PDF an den Schüler versendet. Der Status wechselt nach Versand.
 
 ### Stapel-Erstellung (Mehrere Empfänger)
 
@@ -107,6 +124,16 @@ Die Einlösung eines Gutscheins erfolgt ausschließlich durch den Klassenvorstan
 1. Der Schüler leitet die erhaltene E-Mail mit Gutschein-Id an den Lehrer weiter oder übergibt den ausgedruckten Gutschein mit QR-Code.
 2. Das Sekretariat oder die Direktion prüft den Gutschein und bestätigt oder lehnt ihn ab.
 3. Der Klassenvorstand bestätigt die Einlösung im System. Der Gutschein-Status wieder und Gutschein gelangt in das Archiv.
+
+
+### Passwort-Zurücksetzung
+
+Lehrpersonen und auch der Admin können ihr Passwort über die „Passwort vergessen“-Funktion zurücksetzen.
+
+1. Das System versendet automatisch eine E-Mail mit einem einmaligen Reset-Link.
+2. Über diesen Link kann ein neues Passwort vergeben werden.
+3. Der Link ist zeitlich begrenzt und kann nur einmal verwendet werden.
+
 
 
 ---
