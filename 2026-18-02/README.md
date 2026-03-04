@@ -1,6 +1,6 @@
 ---
 author: David Moser
-label: Dokumentation vom 18. Februar 2026
+label: Doku 18. Februar 2026
 ---
 
 # Projektdokumentation – Gutscheinverwaltung

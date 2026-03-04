@@ -1,6 +1,6 @@
 ---
 author: David Moser
-label: Dokumentation vom 25. Februar 2026
+label: Doku 25. Februar 2026
 date: 25. Februar 2026
 ---
 
