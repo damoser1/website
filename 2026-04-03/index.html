@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="4.1.0.825937751761">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="4.1.0.825940249966">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 4.1.0">
@@ -12,7 +12,7 @@
     <!-- Primary Meta Tags -->
     <title>Technische Umsetzung</title>
     <meta name="title" content="Technische Umsetzung">
-    <meta name="description" content="...">
+    <meta name="description" content="Die Benutzeroberfläche ist rollenbasiert aufgebaut, wobei nur die für die jeweilige Rolle relevanten Funktionen angezeigt werden. Nach dem Login wird der">
 
     <!-- Canonical -->
     <link rel="canonical" href="/2026-04-03/">
@@ -21,17 +21,21 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="/2026-04-03/">
     <meta property="og:title" content="Technische Umsetzung">
-    <meta property="og:description" content="...">
+    <meta property="og:description" content="Die Benutzeroberfläche ist rollenbasiert aufgebaut, wobei nur die für die jeweilige Rolle relevanten Funktionen angezeigt werden. Nach dem Login wird der">
+    <meta property="og:image" content="/assets/mermiad_gutscheinverwaltung.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Technische Umsetzung">
     <meta property="og:site_name" content="Moser">
     <meta property="og:locale" content="en_US">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
-    <link href="../resources/css/retype.css?v=4.1.0.825937751761" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=4.1.0.825940249966" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=4.1.0.825937751761" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=4.1.0.825940249966" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=4.1.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=4.1.0.825937751761" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=4.1.0.825940249966" data-turbo-eval="false" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -139,13 +143,6 @@
     </div>
 </div>
 
-<doc-anchor-target id="datenbankmodell">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#datenbankmodell">#</doc-anchor-trigger>
-        <span>Datenbankmodell</span>
-    </h2>
-</doc-anchor-target>
-<p>...</p>
 <doc-anchor-target id="allgemeines-ui-konzept">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#allgemeines-ui-konzept">#</doc-anchor-trigger>
@@ -352,9 +349,393 @@ Nach dem Login wird der Benutzer automatisch auf das rollenspezifische Dashboard
 <li>Bestätigungsbutton: „Einlösung bestätigen&quot; → Status wechselt, Gutschein wird archiviert</li>
 </ul>
 <hr>
-<p>Passwort Reset für Lehrer???
-Sinnvoll ersten Admin account im seeder erstellen oder gleich in der Datenbank?
-Wenn bestätigt, dann wird gutschein geschickt? wenn korrigiert, nicht mehr einlösbar, wie erfährt der Schüler das?</p>
+<doc-anchor-target id="datenbankmodell">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#datenbankmodell">#</doc-anchor-trigger>
+        <span>Datenbankmodell</span>
+    </h2>
+</doc-anchor-target>
+<p>Das Datenbankmodell bildet alle Entitäten des Gutscheinsystems ab. Die Tabellen sind so gestaltet, dass sie die rollenbasierte Struktur, den Gutschein-Lebenszyklus mit Statusübergängen, das Template-System und die Archivierungslogik vollständig unterstützen.</p>
+<doc-anchor-target id="übersicht-der-tabellen">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#übersicht-der-tabellen">#</doc-anchor-trigger>
+        <span>Übersicht der Tabellen</span>
+    </h3>
+</doc-anchor-target>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Tabelle</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code translate="no" v-pre>users</code></td>
+<td>Administratoren und Lehrpersonen mit Rolle und Berechtigungen</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>students</code></td>
+<td>Schüler als Gutschein-Empfänger</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>voucher_templates</code></td>
+<td>Vom Administrator konfigurierbare Gutschein-Vorlagen</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>personalized_templates</code></td>
+<td>Individuelle Template-Kopien von Lehrpersonen</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>vouchers</code></td>
+<td>Einzelne ausgestellte Gutscheine mit Status und Zuordnung</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="tabelle-für-die-nutzer-users">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tabelle-für-die-nutzer-users">#</doc-anchor-trigger>
+        <span>Tabelle für die Nutzer <code translate="no" v-pre>users</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Speichert alle Benutzer des Systems (Administrator und Lehrpersonen). Schüler werden in einer eigenen Tabelle verwaltet.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Feld</th>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code translate="no" v-pre>id</code></td>
+<td>BIGINT (PK)</td>
+<td>Primärschlüssel</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>name</code></td>
+<td>VARCHAR(255)</td>
+<td>Vollständiger Name</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>email</code></td>
+<td>VARCHAR(255), UQ</td>
+<td>E-Mail-Adresse (eindeutig)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>password</code></td>
+<td>VARCHAR(255), NULL</td>
+<td>Passwort-Hash (NULL bei eingeladenen, noch nicht aktivierten Accounts)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>role</code></td>
+<td>ENUM</td>
+<td>Rolle: <code translate="no" v-pre>admin</code>, <code translate="no" v-pre>teacher</code></td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>can_create_vouchers</code></td>
+<td>BOOLEAN</td>
+<td>Berechtigung zur Gutscheinerstellung (Standard: false)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>can_redeem_vouchers</code></td>
+<td>BOOLEAN</td>
+<td>Berechtigung zur Gutscheineinlösung (Standard: false)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>status</code></td>
+<td>ENUM</td>
+<td>Account-Status: <code translate="no" v-pre>invited</code>, <code translate="no" v-pre>active</code>, <code translate="no" v-pre>deactivated</code></td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>invitation_token</code></td>
+<td>VARCHAR(255), NULL</td>
+<td>Einmaliger Token für den Einladungslink</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>invitation_expires_at</code></td>
+<td>TIMESTAMP, NULL</td>
+<td>Ablaufzeitpunkt des Einladungslinks</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="tabelle-für-die-schüler-students">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tabelle-für-die-schüler-students">#</doc-anchor-trigger>
+        <span>Tabelle für die Schüler <code translate="no" v-pre>students</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Speichert die Schüler als Gutschein-Empfänger. Die Klassenzugehörigkeit wird nicht am Schüler gespeichert.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Feld</th>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code translate="no" v-pre>id</code></td>
+<td>BIGINT (PK)</td>
+<td>Primärschlüssel</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>name</code></td>
+<td>VARCHAR(255)</td>
+<td>Vollständiger Name</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>email</code></td>
+<td>VARCHAR(255), UQ</td>
+<td>E-Mail-Adresse (eindeutig)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>created_by</code></td>
+<td>BIGINT (FK)</td>
+<td>Referenz auf <code translate="no" v-pre>users.id</code> – wer den Schüler angelegt hat</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="tabelle-für-die-gutschein-vorlagen-voucher_templates-des-administrators">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tabelle-für-die-gutschein-vorlagen-voucher_templates-des-administrators">#</doc-anchor-trigger>
+        <span>Tabelle für die Gutschein-Vorlagen <code translate="no" v-pre>voucher_templates</code> des Administrators</span>
+    </h3>
+</doc-anchor-target>
+<p>Speichert die vom Administrator erstellten Gutschein-Vorlagen.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Feld</th>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code translate="no" v-pre>id</code></td>
+<td>BIGINT (PK)</td>
+<td>Primärschlüssel</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>name</code></td>
+<td>VARCHAR(255)</td>
+<td>Name des Templates (z. B. „Nachmittag frei&quot;)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>description</code></td>
+<td>TEXT, NULL</td>
+<td>Beschreibung des Templates</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>content</code></td>
+<td>TEXT</td>
+<td>Textaufbau mit Platzhaltern (<code translate="no" v-pre>{Name}</code>, <code translate="no" v-pre>{Klasse}</code>, etc.)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>validity_days</code></td>
+<td>INT, NULL</td>
+<td>Standard-Gültigkeitsdauer in Tagen</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>logo_path</code></td>
+<td>VARCHAR(255), NULL</td>
+<td>Pfad zum hochgeladenen Logo</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>signature_path</code></td>
+<td>VARCHAR(255), NULL</td>
+<td>Pfad zur hochgeladenen Unterschrift</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>is_active</code></td>
+<td>BOOLEAN</td>
+<td>Ob das Template verwendbar ist (Standard: true)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="tabelle-für-die-personalisierung-von-gutschein-vorlagen-personalized_templates-des-lehrers">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tabelle-für-die-personalisierung-von-gutschein-vorlagen-personalized_templates-des-lehrers">#</doc-anchor-trigger>
+        <span>Tabelle für die Personalisierung von Gutschein-Vorlagen <code translate="no" v-pre>personalized_templates</code> des Lehrers</span>
+    </h3>
+</doc-anchor-target>
+<p>Speichert individuelle Anpassungen von Templates durch Lehrpersonen. Beim Personalisieren wird der gesamte Textaufbau des Basis-Templates als vollständige Kopie übernommen. Der Lehrer kann den Text anschließend frei anpassen (Formulierungen ändern, Abschnitte umschreiben, Reihenfolge anpassen). Das Basis-Template bleibt unverändert. Ändert der Administrator das Basis-Template nachträglich, werden bestehende Personalisierungen davon nicht beeinflusst. Pro Lehrer und Basis-Template existiert maximal eine Personalisierung.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Feld</th>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code translate="no" v-pre>id</code></td>
+<td>BIGINT (PK)</td>
+<td>Primärschlüssel</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>base_template_id</code></td>
+<td>BIGINT (FK)</td>
+<td>Referenz auf <code translate="no" v-pre>voucher_templates.id</code></td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>teacher_id</code></td>
+<td>BIGINT (FK)</td>
+<td>Referenz auf <code translate="no" v-pre>users.id</code> – Lehrperson</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>content</code></td>
+<td>TEXT</td>
+<td>Angepasster Textaufbau</td>
+</tr>
+</tbody>
+</table>
+</div>
+<doc-anchor-target id="tabelle-für-die-gutschein-vouchers">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#tabelle-für-die-gutschein-vouchers">#</doc-anchor-trigger>
+        <span>Tabelle für die Gutschein <code translate="no" v-pre>vouchers</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Speichert die einzelnen ausgestellten Gutscheine mit allen individuellen Daten und dem aktuellen Status.</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Feld</th>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code translate="no" v-pre>id</code></td>
+<td>BIGINT (PK)</td>
+<td>Primärschlüssel</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>voucher_number</code></td>
+<td>VARCHAR(255), UQ</td>
+<td>Eindeutige Gutscheinnummer</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>template_id</code></td>
+<td>BIGINT (FK)</td>
+<td>Referenz auf <code translate="no" v-pre>voucher_templates.id</code></td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>personalized_template_id</code></td>
+<td>BIGINT (FK), NULL</td>
+<td>Referenz auf <code translate="no" v-pre>personalized_templates.id</code> (optional)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>issuer_id</code></td>
+<td>BIGINT (FK)</td>
+<td>Referenz auf <code translate="no" v-pre>users.id</code> – Aussteller</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>student_id</code></td>
+<td>BIGINT (FK)</td>
+<td>Referenz auf <code translate="no" v-pre>students.id</code> – Empfänger</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>class_name</code></td>
+<td>VARCHAR(255), NULL</td>
+<td>Klasse als Freitexteingabe zum Zeitpunkt der Erstellung</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>reason</code></td>
+<td>TEXT</td>
+<td>Begründung (Pflichtfeld)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>additional_text</code></td>
+<td>TEXT, NULL</td>
+<td>Optionaler Zusatztext</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>qr_token</code></td>
+<td>VARCHAR(255), UQ</td>
+<td>Eindeutiger Token für den QR-Code-Link zur Einlösung</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>status</code></td>
+<td>ENUM</td>
+<td>Aktueller Status (siehe Statusübergänge)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>rejection_reason</code></td>
+<td>TEXT, NULL</td>
+<td>Ablehnungsgrund (bei Status <code translate="no" v-pre>rejected</code>)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>batch_id</code></td>
+<td>VARCHAR(255), NULL</td>
+<td>Batch-Kennung bei Stapel-Erstellung</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>issued_at</code></td>
+<td>TIMESTAMP, NULL</td>
+<td>Ausstellungsdatum (nach Bestätigung)</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>expires_at</code></td>
+<td>TIMESTAMP, NULL</td>
+<td>Ablaufdatum</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>sent_at</code></td>
+<td>TIMESTAMP, NULL</td>
+<td>Zeitpunkt des E-Mail-Versands</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>redeemed_at</code></td>
+<td>TIMESTAMP, NULL</td>
+<td>Zeitpunkt der Einlösung</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>redeemed_by</code></td>
+<td>BIGINT (FK), NULL</td>
+<td>Referenz auf <code translate="no" v-pre>users.id</code> – wer eingelöst hat</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>archived_at</code></td>
+<td>TIMESTAMP, NULL</td>
+<td>Zeitpunkt der Archivierung</td>
+</tr>
+<tr>
+<td><code translate="no" v-pre>retention_until</code></td>
+<td>TIMESTAMP, NULL</td>
+<td>Ende der Aufbewahrungsfrist (danach Löschung)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<doc-anchor-target id="beziehungen-er-übersicht">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#beziehungen-er-übersicht">#</doc-anchor-trigger>
+        <span>Beziehungen (ER-Übersicht)</span>
+    </h3>
+</doc-anchor-target>
+<p><figure class="content-center">
+    <img src="../assets/mermiad_gutscheinverwaltung.png" alt="ER-Diagramm" class="rounded-image-rounded border-image-border border-image-border-width" />
+    <figcaption class="caption">ER-Diagramm</figcaption>
+</figure>
+</p>
 
                 
                 <!-- Required only on API pages -->
@@ -377,7 +758,7 @@ Wenn bestätigt, dann wird gutschein geschickt? wenn korrigiert, nicht mehr einl
                         <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../2026-18-02/">
                             <span>
                                 <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                <span class="block mt-1">Doku 18. Februar 2026</span>
+                                <span class="block mt-1">18. Februar 2026</span>
                             </span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                         </a>
@@ -421,6 +802,6 @@ Wenn bestätigt, dann wird gutschein geschickt? wenn korrigiert, nicht mehr einl
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Doku 04. März 2026", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "04. März 2026", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
