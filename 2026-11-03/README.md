@@ -5,234 +5,343 @@ date: 11. März 2026
 order: 96
 ---
 
-# Authentifizierung, Benutzerlogik und Datenmodell
+# Erweiterung der technischen Planung – Models, Controller und Systemlogik
 
-In diesem Entwicklungsschritt wurden die ersten Laravel-Modelle sowie die grundlegenden Controller für Authentifizierung, Ersteinrichtung und Einladungslogik umgesetzt.  
-Da das Datenbankmodell bereits in der vorherigen Dokumentation beschrieben wurde, liegt der Fokus hier auf der Anwendungslogik im Backend.
+## Überblick
 
-## Umgesetzte Modelle
+Mit den neuen Änderungen wurde die bisherige technische Planung des Gutscheinsystems weiter konkretisiert. Während die vorherigen Dokumentationsbeiträge vor allem das Konzept, die Rollen, die Benutzeroberflächen und das Datenbankmodell beschrieben haben, wird in diesem Beitrag die Models und Controller dokumentiert.
+
+Die Controller sind in vier Bereiche unterteilt:
+
+- `Web\Auth` – Authentifizierung und Ersteinrichtung
+- `Web\Shared` – Gemeinsame Funktionen für Admin und Lehrer
+- `Web\Admin` – Administratorspezifische Verwaltung
+- `Web\Teacher` – Lehrerspezifische Funktionen
+
+---
+
+## Umgesetzte Modellstruktur
 
 Für die bereits definierten Tabellen wurden passende Modelle angelegt. Diese übernehmen die Zuweisung von Feldern, Typumwandlungen sowie die Beziehungen zwischen den Entitäten.
 
-### `User`
+### User
 
-Das Modell `User` bildet Administratoren und Lehrpersonen ab.
+Das Model `User` repräsentiert die internen Benutzer des Systems, also Administratoren und Lehrpersonen. Es bildet die Grundlage für Login, Rollensteuerung, Berechtigungen und Benutzerverwaltung.
 
 Verwendete Felder:
 
-- `name`
-- `email`
-- `password`
-- `role`
-- `can_create_vouchers`
-- `can_redeem_vouchers`
-- `status`
-- `invitation_token`
-- `invitation_expires_at`
+- `name`, `email`, `password`
+- `role` (admin, teacher)
+- `can_create_vouchers`, `can_redeem_vouchers`
+- `status` (invited, active, deactivated)
+- `invitation_token`, `invitation_expires_at`
 
-Zusätzlich wurden folgende Eigenschaften definiert:
+Casts und Hidden:
 
 - `password` wird automatisch gehasht gespeichert
 - Berechtigungsfelder werden als Boolean gecastet
 - `invitation_expires_at` wird als Datum behandelt
-- sensible Felder wie `password`, `remember_token` und `invitation_token` sind verborgen
+- `password`, `remember_token` und `invitation_token` sind verborgen
 
 Beziehungen:
 
-- Ein Benutzer kann viele ausgestellte Gutscheine besitzen
-- Ein Benutzer kann viele eingelöste Gutscheine besitzen
-- Ein Benutzer kann viele Schüler angelegt haben
-- Ein Benutzer kann viele personalisierte Templates besitzen
-
-Damit bildet das Modell sowohl Administratoren als auch Lehrpersonen vollständig ab.
+- Ein Benutzer kann mehrere Gutscheine ausstellen (`issuedVouchers`)
+- Ein Benutzer kann mehrere Gutscheine einlösen (`redeemedVouchers`)
+- Ein Benutzer kann mehrere Schüler anlegen (`createdStudents`)
+- Eine Lehrperson kann mehrere personalisierte Templates besitzen (`personalizedTemplates`)
 
 ---
 
-### `Student`
+### Student
 
-Das Modell `Student` repräsentiert die Schüler als Empfänger von Gutscheinen.
+Das Model `Student` repräsentiert die Empfänger der Gutscheine. Schüler besitzen keinen Login, müssen aber eindeutig als Personen verwaltet werden können.
 
 Verwendete Felder:
 
-- `name`
-- `email`
-- `created_by`
+- `name`, `email`, `created_by`
 
 Beziehungen:
 
-- Ein Schüler gehört zu dem Benutzer, der ihn angelegt hat
-- Ein Schüler kann mehrere Gutscheine besitzen
+- Ein Schüler kann mehrere Gutscheine besitzen (`vouchers`)
+- Ein Schüler gehört zu dem Benutzer, der ihn angelegt hat (`creator`)
 
-Dieses Modell dient ausschließlich der Verwaltung der Empfänger und besitzt keine eigene Login-Funktion.
+Die Klasse eines Schülers wird nicht dauerhaft im Schülerprofil gespeichert, sondern nur beim Erstellen eines Gutscheins als Freitexteingabe übernommen.
 
 ---
 
-### `Voucher`
+### Voucher
 
-Das Modell `Voucher` bildet die zentrale Entität des Systems.
+Das Model `Voucher` stellt die zentrale Entität des Systems dar. Es verbindet Templates, Schüler, Aussteller, Statusverlauf und Einlösung.
 
 Verwendete Felder:
 
-- `voucher_number`
-- `template_id`
-- `personalized_template_id`
-- `issuer_id`
-- `student_id`
-- `class_name`
-- `reason`
-- `additional_text`
-- `qr_token`
-- `status`
-- `rejection_reason`
-- `batch_id`
-- `issued_at`
-- `expires_at`
-- `sent_at`
-- `redeemed_at`
-- `redeemed_by`
-- `archived_at`
-- `retention_until`
+- `voucher_number`, `qr_token`
+- `template_id`, `personalized_template_id`
+- `issuer_id`, `student_id`, `redeemed_by`
+- `class_name`, `reason`, `additional_text`
+- `status`, `rejection_reason`, `batch_id`
+- `issued_at`, `expires_at`, `sent_at`, `redeemed_at`, `archived_at`, `retention_until`
 
-Zusätzlich wurden mehrere Zeitfelder als Datumswerte gecastet.
+Alle Zeitfelder werden als Datumswerte gecastet.
 
 Beziehungen:
 
-- Ein Gutschein gehört zu einem Basis-Template
-- Ein Gutschein kann optional ein personalisiertes Template verwenden
-- Ein Gutschein gehört zu einem Aussteller
-- Ein Gutschein gehört zu einem Schüler
-- Ein Gutschein kann optional einem einlösenden Benutzer zugeordnet sein
-
-Damit ist die fachliche Struktur eines Gutscheins bereits vollständig im Modell vorbereitet.
+- Jeder Gutschein basiert auf einem Basis-Template (`template`)
+- Ein Gutschein kann optional auf einer personalisierten Template-Version beruhen (`personalizedTemplate`)
+- Jeder Gutschein gehört zu einem Aussteller (`issuer`)
+- Jeder Gutschein gehört zu einem Schüler (`student`)
+- Ein eingelöster Gutschein kann dem einlösenden Benutzer zugeordnet werden (`redeemer`)
 
 ---
 
-### `VoucherTemplate`
+### VoucherTemplate
 
-Das Modell `VoucherTemplate` dient zur Verwaltung der Basis-Vorlagen für Gutscheine.
+Das Model `VoucherTemplate` speichert die vom Administrator verwalteten Standardvorlagen.
 
 Verwendete Felder:
 
-- `name`
-- `description`
-- `content`
+- `name`, `description`, `content`
 - `validity_days`
-- `logo_path`
-- `signature_path`
-- `is_active`
+- `logo_path`, `signature_path`
+- `is_active` (als Boolean gecastet)
 
 Beziehungen:
 
-- Ein Template kann für vielen Gutscheine verwendet werden
-- Ein Template kann viele personalisierte Varianten besitzen
-
-Dieses Modell bildet die Grundlage für die zentral verwalteten Gutschein-Vorlagen durch den Administrator.
+- Ein Template kann für viele Gutscheine verwendet werden (`vouchers`)
+- Ein Template kann Grundlage mehrerer personalisierter Lehrer-Templates sein (`personalizedTemplates`)
 
 ---
 
-### `PersonalizedTemplate`
+### PersonalizedTemplate
 
-Das Modell `PersonalizedTemplate` speichert individuelle Anpassungen von Basis-Templates durch Lehrpersonen.
+Das Model `PersonalizedTemplate` erweitert das Basissystem um eine persönliche Anpassung der Gutscheininhalte durch Lehrpersonen. Beim Personalisieren wird der gesamte Textaufbau des Basis-Templates als vollständige Kopie übernommen und kann frei angepasst werden.
 
 Verwendete Felder:
 
-- `base_template_id`
-- `teacher_id`
-- `content`
+- `base_template_id`, `teacher_id`, `content`
 
 Beziehungen:
 
-- Eine Personalisierung gehört zu einem Basis-Template
-- Eine Personalisierung gehört zu einer Lehrperson
-- Eine Personalisierung kann in mehreren Gutscheinen verwendet werden
-
-Damit kann ein Lehrer ein bestehendes Template individuell anpassen, ohne das Original des Administrators zu verändern.
+- Jede Personalisierung gehört zu einem Basis-Template (`baseTemplate`)
+- Jede Personalisierung gehört zu einer Lehrperson (`teacher`)
+- Eine Personalisierung kann von mehreren Gutscheinen verwendet werden (`vouchers`)
 
 ---
 
-## Bisher umgesetzte Controller
+## Umgesetzte Controller
 
-Neben den Modellen wurden bereits mehrere Controller für die Benutzer- und Authentifizierungslogik implementiert.
+Die Controller sind nach Rollen und Verantwortlichkeiten in vier Namespaces aufgeteilt:
 
----
+### Authentifizierungsbereich (`Web\Auth`)
 
-### `SetupController`
+#### SetupController
 
-Der `SetupController` dient der einmaligen Ersteinrichtung des Systems.
+Zuständig für die Ersteinrichtung des Systems.
 
-Funktionen:
+- Anzeige der Setup-Seite
+- Validierung von Name, E-Mail und Passwort
+- Erstellen des ersten Benutzers mit Rolle `admin` und Status `active`
+- Automatischer Login und Weiterleitung auf das Dashboard
 
-- Anzeige der Setup-Seite beim ersten Systemstart
-- Validierung der Eingabedaten für den ersten Benutzer
-- Erstellung des ersten Benutzerkontos als Administrator
-- automatischer Login nach erfolgreicher Registrierung
-- Weiterleitung auf das Dashboard
+#### LoginController
 
-Dabei wird der erste Benutzer mit folgenden Standardwerten erstellt:
+Zuständig für die Anmeldung bestehender Benutzer.
 
-- Rolle: `admin`
-- Status: `active`
-- Berechtigung zur Gutscheinerstellung: aktiviert
-- Berechtigung zur Gutscheineinlösung: aktiviert
+- Weiterleitung auf Setup, falls noch kein Benutzer existiert
+- Manuelle Prüfung von E-Mail und Passwort
+- Statusprüfung: nur aktive Accounts können sich einloggen
+- Login mit optionaler Remember-Funktion
+- Logout-Funktion
 
-Dieser Controller stellt sicher, dass die öffentliche Registrierung nur zur initialen Einrichtung des Systems verwendet wird.
+#### InvitationController
 
----
+Zuständig für den Einladungsprozess neuer Benutzer.
 
-### `LoginController`
+- Suche des Benutzers anhand von Token, Status und Ablaufdatum
+- Anzeige der Passwortvergabe-Seite mit E-Mail des eingeladenen Benutzers
+- Setzen des Passworts, Aktivierung des Accounts und Löschen des Tokens
+- Automatischer Login nach Abschluss
 
-Der `LoginController` verwaltet den Login und Logout der Benutzer.
+#### PasswordResetController
 
-Funktionen:
+Zuständig für die Zurücksetzung vergessener Passwörter.
 
-- Anzeige der Login-Seite
-- automatische Weiterleitung zur Setup-Seite, wenn noch kein Benutzer existiert
-- Validierung von E-Mail und Passwort
-- Prüfung, ob der Benutzer existiert
-- Prüfung des Passwort-Hashs
-- Prüfung, ob der Benutzerstatus auf `active` gesetzt ist
-- Anmeldung des Benutzers
-- Abmeldung des Benutzers
-
-Dadurch wird verhindert, dass eingeladene oder deaktivierte Benutzer bereits auf das System zugreifen können.
+- Anzeige der Passwort-vergessen-Seite
+- Versand des Reset-Links
+- Anzeige der Reset-Seite mit Token
+- Setzen des neuen Passworts
+- Weiterleitung auf Login bei Erfolg
 
 ---
 
-### `InvitationController`
+### Gemeinsame Bereiche (`Web\Shared`)
 
-Der `InvitationController` bildet die Grundlage für den Einladungsprozess neuer Lehrpersonen.
+#### DashboardController
 
-Funktionen:
+Das Dashboard liefert abhängig von der Rolle unterschiedliche Informationen.
 
-- Aufruf eines Einladungslinks über Token
-- Suche des zugehörigen Benutzers anhand des Einladungstokens
-- Prüfung, ob der Benutzer noch den Status `invited` besitzt
-- Prüfung, ob der Einladungslink noch gültig ist
-- Anzeige der Passwort-Vergabe-Seite
-- Validierung des neuen Passworts
-- Speichern des Passworts
-- Aktivierung des Benutzerkontos
-- Entfernen von Token und Ablaufdatum
-- automatischer Login nach erfolgreicher Aktivierung
+Für Administratoren:
 
-Damit wurde der im Konzept vorgesehene Einladungs-Workflow technisch vorbereitet.
+- Anzahl ausstehender Gutscheine
+- Die letzten 10 erstellten Gutscheine
+
+Für Lehrpersonen:
+
+- Die letzten 10 eigenen Gutscheine
+- Anzahl abgelehnter Gutscheine
+
+#### StudentController
+
+Die gemeinsame Schülerverwaltung für Admin und Lehrer.
+
+- Übersicht aller Schüler mit Paginierung
+- Anlegen neuer Schüler mit Validierung (Name, E-Mail eindeutig)
+- Bearbeiten vorhandener Schüler
+- Löschen nur bei fehlenden aktiven Gutscheinen (Prüfung über Status)
+- Archivierte Gutscheine des Schülers werden beim Löschen mitentfernt
+
+#### VoucherCreateController
+
+Zuständig für die Erstellung von Gutscheinen (Einzel und Stapel).
+
+- Laden aktiver Templates und vorhandener Schüler
+- Validierung: Template muss existieren, mindestens ein Schüler, Begründung als Pflichtfeld
+- Bei mehreren Schülern: automatische Vergabe einer Batch-ID
+- Pro Schüler: eigene Gutscheinnummer und eigener QR-Token
+- Alle Gutscheine werden gespeichert
+
+#### RedeemController
+
+Zuständig für die digitale Einlösung über QR-Code-Token.
+
+- Laden des Gutscheins
+- Anzeige der Gutschein-Details mit Student und Template
+- Prüfung: Status muss `sent` sein und Ablaufdatum darf nicht überschritten sein
+- Speichern der Einlösung: Status auf `redeemed`, Zeitpunkt und einlösender Benutzer
 
 ---
 
-### `PasswordResetController`
+### Administrationsbereich (`Web\Admin`)
 
-Der `PasswordResetController` setzt die Passwort-Zurücksetzung um.
+#### VoucherController
 
-Funktionen:
+Zuständig für die administrative Verwaltung aller Gutscheine.
 
-- Anzeige der Seite „Passwort vergessen“
-- Validierung der eingegebenen E-Mail-Adresse
-- Versand eines Reset-Links
-- Anzeige der Reset-Seite über Token
-- Validierung von Token, E-Mail und neuem Passwort
-- Speichern des neuen Passworts
-- Weiterleitung zurück zur Login-Seite nach erfolgreicher Änderung
+- Übersicht aller Gutscheine mit Eager Loading (Student, Aussteller, Template) und Paginierung
+- Detailansicht mit zusätzlichem Laden des Einlösers
+- Bearbeiten von Begründung, Zusatztext, Klasse und Ablaufdatum
+- Löschen von Gutscheinen
+- Bestätigungsansicht: alle Gutscheine mit Status `pending`
+- Bestätigen: Status auf `confirmed`, Ausstellungsdatum wird gesetzt
+- Ablehnen: Status auf `rejected` mit Pflichtfeld Ablehnungsgrund
+- Zurücksetzen: Status zurück auf `pending`, Ablehnungsgrund und Versanddatum werden gelöscht
 
-Damit können Benutzer ihr Passwort selbstständig zurücksetzen, ohne dass ein Administrator eingreifen muss.
+#### TemplateController
+
+Zuständig für die Verwaltung der Gutschein-Vorlagen.
+
+- Übersicht aller Templates sortiert nach Name
+- Erstellen und Bearbeiten mit Validierung (Name, Inhalt als Pflichtfelder)
+- Optionaler Upload von Logo und Unterschrift
+- Löschen nur möglich, wenn keine Gutscheine auf dem Template basieren
+- Deaktivieren als Alternative zum Löschen
+
+#### UserController
+
+Zuständig für die Benutzerverwaltung durch den Administrator.
+
+- Übersicht aller Benutzer sortiert nach Name
+- Anlegen neuer Benutzer mit Rolle (admin oder teacher) und optionalen Berechtigungen
+- Generierung eines Einladungstokens
+- Versand der Einladungs-E-Mail mit Link zur Passwortvergabe
+- Erneutes Einladen: neuer Token wird generiert und versendet
+- Berechtigungen (Erstellung, Einlösung) per Toggle aktualisieren
+- Deaktivieren und Aktivieren von Accounts
+- Löschen nur möglich, wenn keine aktiven Gutscheine mit dem Benutzer als Aussteller verknüpft sind
+
+#### ArchiveController
+
+Zuständig für die Anzeige archivierter Gutscheine.
+
+- Laden aller Gutscheine mit Status `archived`
+- Eager Loading von Student, Aussteller und Template
+- Sortierung nach Archivierungszeitpunkt
+- Paginierung mit 20 Einträgen pro Seite
 
 ---
+
+### Lehrerbereich (`Web\Teacher`)
+
+#### MyVoucherController
+
+Zuständig für die Verwaltung der eigenen Gutscheine durch Lehrpersonen.
+
+- Übersicht aller selbst erstellten Gutscheine
+- Detailansicht: Zugriff nur auf eigene Gutscheine, Prüfung über
+- Bearbeitung nur bei abgelehnten Gutscheinen
+- Nach Korrektur: Status wechselt zurück auf `pending`, Ablehnungsgrund wird gelöscht
+
+#### PersonalizedTemplateController
+
+Zuständig für die Personalisierung von Templates durch Lehrpersonen.
+
+- Übersicht aller aktiven Basis-Templates und eigener Personalisierungen
+- Erstellen: Basis-Template wird als vollständige Kopie übernommen, Lehrer kann Inhalt frei anpassen
+- Bearbeiten und Löschen eigener Personalisierungen
+- Zugriffskontrolle
+
+---
+
+## Technische Abbildung der Kernprozesse
+
+Die fachlich beschriebenen Abläufe werden durch die Backend-Struktur wie folgt abgebildet:
+
+### 1. Ersteinrichtung
+
+- `LoginController` prüft beim Aufruf, ob Benutzer existieren
+- Falls nicht: Weiterleitung auf `SetupController`
+- Erster registrierter Benutzer erhält Rolle `admin` und Status `active`
+
+### 2. Benutzer-Einladung
+
+- Administrator erstellt Benutzer`
+- System erzeugt Token mit 7 Tagen Gültigkeit und versendet E-Mail
+- Eingeladener Benutzer öffnet Link, `InvitationController` prüft Token
+- Nach Passwortvergabe: Account wird auf `active` gesetzt, Token gelöscht
+
+### 3. Gutschein-Erstellung
+
+- Berechtigter Benutzer wählt Template und Schüler in `VoucherCreateController`
+- Pro Schüler wird ein eigener Gutschein mit eindeutiger Nummer und QR-Token erstellt
+- Bei Mehrfachauswahl wird eine gemeinsame Batch-ID vergeben
+- Alle Gutscheine werden mit Status `pending` gespeichert
+
+### 4. Gutschein-Prüfung
+
+- Bestätigung: Status auf `confirmed`, Ausstellungsdatum wird gesetzt
+- Ablehnung: Status auf `rejected` mit Pflichtfeld Ablehnungsgrund
+- Lehrer kann Gutschein korrigieren und erneut einreichen
+
+### 5. Gutschein-Einlösung
+
+- QR-Code enthält Link mit Token
+- System prüft Status (`sent`) und Ablaufdatum
+- Berechtigter Benutzer bestätigt, Zeitpunkt und Einlöser werden gespeichert
+
+### 6. Archivierung
+
+- Eingelöste oder abgelaufene Gutscheine sollen später automatisch archiviert werden
+- `ArchiveController` zeigt archivierte Gutscheine an
+- Löschlogik nach Ablauf der Aufbewahrungsfrist ist geplant
+
+---
+
+## Nächste geplante Ausbauschritte
+
+- PDF-Generierung für bestätigte Gutscheine
+- Automatischer E-Mail-Versand an Schüler
+- Statuswechsel auf `sent` nach erfolgreichem Versand
+- Fehlerbehandlung bei fehlgeschlagenem Versand
+- Automatische Archivierungslogik
+- Automatische Löschlogik nach Aufbewahrungsfrist
+- Such-, Filter- und Vorschaufunktionen in den Verwaltungsansichten
