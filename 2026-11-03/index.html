@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="4.1.0.826532447870">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="4.1.0.826544533440">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 4.1.0">
 
     <!-- Primary Meta Tags -->
-    <title>Authentifizierung, Benutzerlogik und Datenmodell</title>
-    <meta name="title" content="Authentifizierung, Benutzerlogik und Datenmodell">
-    <meta name="description" content="In diesem Entwicklungsschritt wurden die ersten Laravel-Modelle sowie die grundlegenden Controller für Authentifizierung, Ersteinrichtung und">
+    <title>Erweiterung der technischen Planung – Models, Controller und Systemlogik</title>
+    <meta name="title" content="Erweiterung der technischen Planung – Models, Controller und Systemlogik">
+    <meta name="description" content="Mit den neuen Änderungen wurde die bisherige technische Planung des Gutscheinsystems weiter konkretisiert. Während die vorherigen Dokumentationsbeiträge">
 
     <!-- Canonical -->
     <link rel="canonical" href="/2026-11-03/">
@@ -20,18 +20,18 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="/2026-11-03/">
-    <meta property="og:title" content="Authentifizierung, Benutzerlogik und Datenmodell">
-    <meta property="og:description" content="In diesem Entwicklungsschritt wurden die ersten Laravel-Modelle sowie die grundlegenden Controller für Authentifizierung, Ersteinrichtung und">
+    <meta property="og:title" content="Erweiterung der technischen Planung – Models, Controller und Systemlogik">
+    <meta property="og:description" content="Mit den neuen Änderungen wurde die bisherige technische Planung des Gutscheinsystems weiter konkretisiert. Während die vorherigen Dokumentationsbeiträge">
     <meta property="og:site_name" content="Moser">
     <meta property="og:locale" content="en_US">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
-    <link href="../resources/css/retype.css?v=4.1.0.826532447870" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=4.1.0.826544533440" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=4.1.0.826532447870" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=4.1.0.826544533440" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=4.1.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=4.1.0.826532447870" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=4.1.0.826544533440" data-turbo-eval="false" defer></script>
 </head>
 <body>
     <div id="retype-app" class="relative text-base antialiased text-base-text bg-base-bg font-body">
@@ -121,10 +121,10 @@
                 <!-- Rendered if sidebar right is enabled -->
                 <div id="retype-sidebar-right-toggle"></div>
                 <!-- Page content  -->
-<doc-anchor-target id="authentifizierung-benutzerlogik-und-datenmodell" class="break-words">
+<doc-anchor-target id="erweiterung-der-technischen-planung--models-controller-und-systemlogik" class="break-words">
     <h1>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#authentifizierung-benutzerlogik-und-datenmodell">#</doc-anchor-trigger>
-        <span>Authentifizierung, Benutzerlogik und Datenmodell</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#erweiterung-der-technischen-planung--models-controller-und-systemlogik">#</doc-anchor-trigger>
+        <span>Erweiterung der technischen Planung – Models, Controller und Systemlogik</span>
     </h1>
 </doc-anchor-target>
 <div class="-mt-3 mb-12 flex flex-wrap text-sm text-gray-400 dark:text-dark-350 items-center">
@@ -139,248 +139,465 @@
     </div>
 </div>
 
-<p>In diesem Entwicklungsschritt wurden die ersten Laravel-Modelle sowie die grundlegenden Controller für Authentifizierung, Ersteinrichtung und Einladungslogik umgesetzt.<br />
-Da das Datenbankmodell bereits in der vorherigen Dokumentation beschrieben wurde, liegt der Fokus hier auf der Anwendungslogik im Backend.</p>
-<doc-anchor-target id="umgesetzte-modelle">
+<doc-anchor-target id="überblick">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#umgesetzte-modelle">#</doc-anchor-trigger>
-        <span>Umgesetzte Modelle</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#überblick">#</doc-anchor-trigger>
+        <span>Überblick</span>
+    </h2>
+</doc-anchor-target>
+<p>Mit den neuen Änderungen wurde die bisherige technische Planung des Gutscheinsystems weiter konkretisiert. Während die vorherigen Dokumentationsbeiträge vor allem das Konzept, die Rollen, die Benutzeroberflächen und das Datenbankmodell beschrieben haben, wird in diesem Beitrag die Models und Controller dokumentiert.</p>
+<p>Die Controller sind in vier Bereiche unterteilt:</p>
+<ul>
+<li><code translate="no" v-pre>Web\Auth</code> – Authentifizierung und Ersteinrichtung</li>
+<li><code translate="no" v-pre>Web\Shared</code> – Gemeinsame Funktionen für Admin und Lehrer</li>
+<li><code translate="no" v-pre>Web\Admin</code> – Administratorspezifische Verwaltung</li>
+<li><code translate="no" v-pre>Web\Teacher</code> – Lehrerspezifische Funktionen</li>
+</ul>
+<hr>
+<doc-anchor-target id="umgesetzte-modellstruktur">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#umgesetzte-modellstruktur">#</doc-anchor-trigger>
+        <span>Umgesetzte Modellstruktur</span>
     </h2>
 </doc-anchor-target>
 <p>Für die bereits definierten Tabellen wurden passende Modelle angelegt. Diese übernehmen die Zuweisung von Feldern, Typumwandlungen sowie die Beziehungen zwischen den Entitäten.</p>
 <doc-anchor-target id="user">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#user">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>User</code></span>
+        <span>User</span>
     </h3>
 </doc-anchor-target>
-<p>Das Modell <code translate="no" v-pre>User</code> bildet Administratoren und Lehrpersonen ab.</p>
+<p>Das Model <code translate="no" v-pre>User</code> repräsentiert die internen Benutzer des Systems, also Administratoren und Lehrpersonen. Es bildet die Grundlage für Login, Rollensteuerung, Berechtigungen und Benutzerverwaltung.</p>
 <p>Verwendete Felder:</p>
 <ul>
-<li><code translate="no" v-pre>name</code></li>
-<li><code translate="no" v-pre>email</code></li>
-<li><code translate="no" v-pre>password</code></li>
-<li><code translate="no" v-pre>role</code></li>
-<li><code translate="no" v-pre>can_create_vouchers</code></li>
-<li><code translate="no" v-pre>can_redeem_vouchers</code></li>
-<li><code translate="no" v-pre>status</code></li>
-<li><code translate="no" v-pre>invitation_token</code></li>
-<li><code translate="no" v-pre>invitation_expires_at</code></li>
+<li><code translate="no" v-pre>name</code>, <code translate="no" v-pre>email</code>, <code translate="no" v-pre>password</code></li>
+<li><code translate="no" v-pre>role</code> (admin, teacher)</li>
+<li><code translate="no" v-pre>can_create_vouchers</code>, <code translate="no" v-pre>can_redeem_vouchers</code></li>
+<li><code translate="no" v-pre>status</code> (invited, active, deactivated)</li>
+<li><code translate="no" v-pre>invitation_token</code>, <code translate="no" v-pre>invitation_expires_at</code></li>
 </ul>
-<p>Zusätzlich wurden folgende Eigenschaften definiert:</p>
+<p>Casts und Hidden:</p>
 <ul>
 <li><code translate="no" v-pre>password</code> wird automatisch gehasht gespeichert</li>
 <li>Berechtigungsfelder werden als Boolean gecastet</li>
 <li><code translate="no" v-pre>invitation_expires_at</code> wird als Datum behandelt</li>
-<li>sensible Felder wie <code translate="no" v-pre>password</code>, <code translate="no" v-pre>remember_token</code> und <code translate="no" v-pre>invitation_token</code> sind verborgen</li>
+<li><code translate="no" v-pre>password</code>, <code translate="no" v-pre>remember_token</code> und <code translate="no" v-pre>invitation_token</code> sind verborgen</li>
 </ul>
 <p>Beziehungen:</p>
 <ul>
-<li>Ein Benutzer kann viele ausgestellte Gutscheine besitzen</li>
-<li>Ein Benutzer kann viele eingelöste Gutscheine besitzen</li>
-<li>Ein Benutzer kann viele Schüler angelegt haben</li>
-<li>Ein Benutzer kann viele personalisierte Templates besitzen</li>
+<li>Ein Benutzer kann mehrere Gutscheine ausstellen (<code translate="no" v-pre>issuedVouchers</code>)</li>
+<li>Ein Benutzer kann mehrere Gutscheine einlösen (<code translate="no" v-pre>redeemedVouchers</code>)</li>
+<li>Ein Benutzer kann mehrere Schüler anlegen (<code translate="no" v-pre>createdStudents</code>)</li>
+<li>Eine Lehrperson kann mehrere personalisierte Templates besitzen (<code translate="no" v-pre>personalizedTemplates</code>)</li>
 </ul>
-<p>Damit bildet das Modell sowohl Administratoren als auch Lehrpersonen vollständig ab.</p>
 <hr>
 <doc-anchor-target id="student">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#student">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>Student</code></span>
+        <span>Student</span>
     </h3>
 </doc-anchor-target>
-<p>Das Modell <code translate="no" v-pre>Student</code> repräsentiert die Schüler als Empfänger von Gutscheinen.</p>
+<p>Das Model <code translate="no" v-pre>Student</code> repräsentiert die Empfänger der Gutscheine. Schüler besitzen keinen Login, müssen aber eindeutig als Personen verwaltet werden können.</p>
 <p>Verwendete Felder:</p>
 <ul>
-<li><code translate="no" v-pre>name</code></li>
-<li><code translate="no" v-pre>email</code></li>
-<li><code translate="no" v-pre>created_by</code></li>
+<li><code translate="no" v-pre>name</code>, <code translate="no" v-pre>email</code>, <code translate="no" v-pre>created_by</code></li>
 </ul>
 <p>Beziehungen:</p>
 <ul>
-<li>Ein Schüler gehört zu dem Benutzer, der ihn angelegt hat</li>
-<li>Ein Schüler kann mehrere Gutscheine besitzen</li>
+<li>Ein Schüler kann mehrere Gutscheine besitzen (<code translate="no" v-pre>vouchers</code>)</li>
+<li>Ein Schüler gehört zu dem Benutzer, der ihn angelegt hat (<code translate="no" v-pre>creator</code>)</li>
 </ul>
-<p>Dieses Modell dient ausschließlich der Verwaltung der Empfänger und besitzt keine eigene Login-Funktion.</p>
+<p>Die Klasse eines Schülers wird nicht dauerhaft im Schülerprofil gespeichert, sondern nur beim Erstellen eines Gutscheins als Freitexteingabe übernommen.</p>
 <hr>
 <doc-anchor-target id="voucher">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#voucher">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>Voucher</code></span>
+        <span>Voucher</span>
     </h3>
 </doc-anchor-target>
-<p>Das Modell <code translate="no" v-pre>Voucher</code> bildet die zentrale Entität des Systems.</p>
+<p>Das Model <code translate="no" v-pre>Voucher</code> stellt die zentrale Entität des Systems dar. Es verbindet Templates, Schüler, Aussteller, Statusverlauf und Einlösung.</p>
 <p>Verwendete Felder:</p>
 <ul>
-<li><code translate="no" v-pre>voucher_number</code></li>
-<li><code translate="no" v-pre>template_id</code></li>
-<li><code translate="no" v-pre>personalized_template_id</code></li>
-<li><code translate="no" v-pre>issuer_id</code></li>
-<li><code translate="no" v-pre>student_id</code></li>
-<li><code translate="no" v-pre>class_name</code></li>
-<li><code translate="no" v-pre>reason</code></li>
-<li><code translate="no" v-pre>additional_text</code></li>
-<li><code translate="no" v-pre>qr_token</code></li>
-<li><code translate="no" v-pre>status</code></li>
-<li><code translate="no" v-pre>rejection_reason</code></li>
-<li><code translate="no" v-pre>batch_id</code></li>
-<li><code translate="no" v-pre>issued_at</code></li>
-<li><code translate="no" v-pre>expires_at</code></li>
-<li><code translate="no" v-pre>sent_at</code></li>
-<li><code translate="no" v-pre>redeemed_at</code></li>
-<li><code translate="no" v-pre>redeemed_by</code></li>
-<li><code translate="no" v-pre>archived_at</code></li>
-<li><code translate="no" v-pre>retention_until</code></li>
+<li><code translate="no" v-pre>voucher_number</code>, <code translate="no" v-pre>qr_token</code></li>
+<li><code translate="no" v-pre>template_id</code>, <code translate="no" v-pre>personalized_template_id</code></li>
+<li><code translate="no" v-pre>issuer_id</code>, <code translate="no" v-pre>student_id</code>, <code translate="no" v-pre>redeemed_by</code></li>
+<li><code translate="no" v-pre>class_name</code>, <code translate="no" v-pre>reason</code>, <code translate="no" v-pre>additional_text</code></li>
+<li><code translate="no" v-pre>status</code>, <code translate="no" v-pre>rejection_reason</code>, <code translate="no" v-pre>batch_id</code></li>
+<li><code translate="no" v-pre>issued_at</code>, <code translate="no" v-pre>expires_at</code>, <code translate="no" v-pre>sent_at</code>, <code translate="no" v-pre>redeemed_at</code>, <code translate="no" v-pre>archived_at</code>, <code translate="no" v-pre>retention_until</code></li>
 </ul>
-<p>Zusätzlich wurden mehrere Zeitfelder als Datumswerte gecastet.</p>
+<p>Alle Zeitfelder werden als Datumswerte gecastet.</p>
 <p>Beziehungen:</p>
 <ul>
-<li>Ein Gutschein gehört zu einem Basis-Template</li>
-<li>Ein Gutschein kann optional ein personalisiertes Template verwenden</li>
-<li>Ein Gutschein gehört zu einem Aussteller</li>
-<li>Ein Gutschein gehört zu einem Schüler</li>
-<li>Ein Gutschein kann optional einem einlösenden Benutzer zugeordnet sein</li>
+<li>Jeder Gutschein basiert auf einem Basis-Template (<code translate="no" v-pre>template</code>)</li>
+<li>Ein Gutschein kann optional auf einer personalisierten Template-Version beruhen (<code translate="no" v-pre>personalizedTemplate</code>)</li>
+<li>Jeder Gutschein gehört zu einem Aussteller (<code translate="no" v-pre>issuer</code>)</li>
+<li>Jeder Gutschein gehört zu einem Schüler (<code translate="no" v-pre>student</code>)</li>
+<li>Ein eingelöster Gutschein kann dem einlösenden Benutzer zugeordnet werden (<code translate="no" v-pre>redeemer</code>)</li>
 </ul>
-<p>Damit ist die fachliche Struktur eines Gutscheins bereits vollständig im Modell vorbereitet.</p>
 <hr>
 <doc-anchor-target id="vouchertemplate">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#vouchertemplate">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>VoucherTemplate</code></span>
+        <span>VoucherTemplate</span>
     </h3>
 </doc-anchor-target>
-<p>Das Modell <code translate="no" v-pre>VoucherTemplate</code> dient zur Verwaltung der Basis-Vorlagen für Gutscheine.</p>
+<p>Das Model <code translate="no" v-pre>VoucherTemplate</code> speichert die vom Administrator verwalteten Standardvorlagen.</p>
 <p>Verwendete Felder:</p>
 <ul>
-<li><code translate="no" v-pre>name</code></li>
-<li><code translate="no" v-pre>description</code></li>
-<li><code translate="no" v-pre>content</code></li>
+<li><code translate="no" v-pre>name</code>, <code translate="no" v-pre>description</code>, <code translate="no" v-pre>content</code></li>
 <li><code translate="no" v-pre>validity_days</code></li>
-<li><code translate="no" v-pre>logo_path</code></li>
-<li><code translate="no" v-pre>signature_path</code></li>
-<li><code translate="no" v-pre>is_active</code></li>
+<li><code translate="no" v-pre>logo_path</code>, <code translate="no" v-pre>signature_path</code></li>
+<li><code translate="no" v-pre>is_active</code> (als Boolean gecastet)</li>
 </ul>
 <p>Beziehungen:</p>
 <ul>
-<li>Ein Template kann für vielen Gutscheine verwendet werden</li>
-<li>Ein Template kann viele personalisierte Varianten besitzen</li>
+<li>Ein Template kann für viele Gutscheine verwendet werden (<code translate="no" v-pre>vouchers</code>)</li>
+<li>Ein Template kann Grundlage mehrerer personalisierter Lehrer-Templates sein (<code translate="no" v-pre>personalizedTemplates</code>)</li>
 </ul>
-<p>Dieses Modell bildet die Grundlage für die zentral verwalteten Gutschein-Vorlagen durch den Administrator.</p>
 <hr>
 <doc-anchor-target id="personalizedtemplate">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#personalizedtemplate">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>PersonalizedTemplate</code></span>
+        <span>PersonalizedTemplate</span>
     </h3>
 </doc-anchor-target>
-<p>Das Modell <code translate="no" v-pre>PersonalizedTemplate</code> speichert individuelle Anpassungen von Basis-Templates durch Lehrpersonen.</p>
+<p>Das Model <code translate="no" v-pre>PersonalizedTemplate</code> erweitert das Basissystem um eine persönliche Anpassung der Gutscheininhalte durch Lehrpersonen. Beim Personalisieren wird der gesamte Textaufbau des Basis-Templates als vollständige Kopie übernommen und kann frei angepasst werden.</p>
 <p>Verwendete Felder:</p>
 <ul>
-<li><code translate="no" v-pre>base_template_id</code></li>
-<li><code translate="no" v-pre>teacher_id</code></li>
-<li><code translate="no" v-pre>content</code></li>
+<li><code translate="no" v-pre>base_template_id</code>, <code translate="no" v-pre>teacher_id</code>, <code translate="no" v-pre>content</code></li>
 </ul>
 <p>Beziehungen:</p>
 <ul>
-<li>Eine Personalisierung gehört zu einem Basis-Template</li>
-<li>Eine Personalisierung gehört zu einer Lehrperson</li>
-<li>Eine Personalisierung kann in mehreren Gutscheinen verwendet werden</li>
+<li>Jede Personalisierung gehört zu einem Basis-Template (<code translate="no" v-pre>baseTemplate</code>)</li>
+<li>Jede Personalisierung gehört zu einer Lehrperson (<code translate="no" v-pre>teacher</code>)</li>
+<li>Eine Personalisierung kann von mehreren Gutscheinen verwendet werden (<code translate="no" v-pre>vouchers</code>)</li>
 </ul>
-<p>Damit kann ein Lehrer ein bestehendes Template individuell anpassen, ohne das Original des Administrators zu verändern.</p>
 <hr>
-<doc-anchor-target id="bisher-umgesetzte-controller">
+<doc-anchor-target id="umgesetzte-controller">
     <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#bisher-umgesetzte-controller">#</doc-anchor-trigger>
-        <span>Bisher umgesetzte Controller</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#umgesetzte-controller">#</doc-anchor-trigger>
+        <span>Umgesetzte Controller</span>
     </h2>
 </doc-anchor-target>
-<p>Neben den Modellen wurden bereits mehrere Controller für die Benutzer- und Authentifizierungslogik implementiert.</p>
-<hr>
+<p>Die Controller sind nach Rollen und Verantwortlichkeiten in vier Namespaces aufgeteilt:</p>
+<doc-anchor-target id="authentifizierungsbereich-webauth">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#authentifizierungsbereich-webauth">#</doc-anchor-trigger>
+        <span>Authentifizierungsbereich (<code translate="no" v-pre>Web\Auth</code>)</span>
+    </h3>
+</doc-anchor-target>
 <doc-anchor-target id="setupcontroller">
-    <h3>
+    <h4>
         <doc-anchor-trigger class="header-anchor-trigger" to="#setupcontroller">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>SetupController</code></span>
-    </h3>
+        <span>SetupController</span>
+    </h4>
 </doc-anchor-target>
-<p>Der <code translate="no" v-pre>SetupController</code> dient der einmaligen Ersteinrichtung des Systems.</p>
-<p>Funktionen:</p>
+<p>Zuständig für die Ersteinrichtung des Systems.</p>
 <ul>
-<li>Anzeige der Setup-Seite beim ersten Systemstart</li>
-<li>Validierung der Eingabedaten für den ersten Benutzer</li>
-<li>Erstellung des ersten Benutzerkontos als Administrator</li>
-<li>automatischer Login nach erfolgreicher Registrierung</li>
-<li>Weiterleitung auf das Dashboard</li>
+<li>Anzeige der Setup-Seite</li>
+<li>Validierung von Name, E-Mail und Passwort</li>
+<li>Erstellen des ersten Benutzers mit Rolle <code translate="no" v-pre>admin</code> und Status <code translate="no" v-pre>active</code></li>
+<li>Automatischer Login und Weiterleitung auf das Dashboard</li>
 </ul>
-<p>Dabei wird der erste Benutzer mit folgenden Standardwerten erstellt:</p>
-<ul>
-<li>Rolle: <code translate="no" v-pre>admin</code></li>
-<li>Status: <code translate="no" v-pre>active</code></li>
-<li>Berechtigung zur Gutscheinerstellung: aktiviert</li>
-<li>Berechtigung zur Gutscheineinlösung: aktiviert</li>
-</ul>
-<p>Dieser Controller stellt sicher, dass die öffentliche Registrierung nur zur initialen Einrichtung des Systems verwendet wird.</p>
-<hr>
 <doc-anchor-target id="logincontroller">
-    <h3>
+    <h4>
         <doc-anchor-trigger class="header-anchor-trigger" to="#logincontroller">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>LoginController</code></span>
-    </h3>
+        <span>LoginController</span>
+    </h4>
 </doc-anchor-target>
-<p>Der <code translate="no" v-pre>LoginController</code> verwaltet den Login und Logout der Benutzer.</p>
-<p>Funktionen:</p>
+<p>Zuständig für die Anmeldung bestehender Benutzer.</p>
 <ul>
-<li>Anzeige der Login-Seite</li>
-<li>automatische Weiterleitung zur Setup-Seite, wenn noch kein Benutzer existiert</li>
-<li>Validierung von E-Mail und Passwort</li>
-<li>Prüfung, ob der Benutzer existiert</li>
-<li>Prüfung des Passwort-Hashs</li>
-<li>Prüfung, ob der Benutzerstatus auf <code translate="no" v-pre>active</code> gesetzt ist</li>
-<li>Anmeldung des Benutzers</li>
-<li>Abmeldung des Benutzers</li>
+<li>Weiterleitung auf Setup, falls noch kein Benutzer existiert</li>
+<li>Manuelle Prüfung von E-Mail und Passwort</li>
+<li>Statusprüfung: nur aktive Accounts können sich einloggen</li>
+<li>Login mit optionaler Remember-Funktion</li>
+<li>Logout-Funktion</li>
 </ul>
-<p>Dadurch wird verhindert, dass eingeladene oder deaktivierte Benutzer bereits auf das System zugreifen können.</p>
-<hr>
 <doc-anchor-target id="invitationcontroller">
-    <h3>
+    <h4>
         <doc-anchor-trigger class="header-anchor-trigger" to="#invitationcontroller">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>InvitationController</code></span>
-    </h3>
+        <span>InvitationController</span>
+    </h4>
 </doc-anchor-target>
-<p>Der <code translate="no" v-pre>InvitationController</code> bildet die Grundlage für den Einladungsprozess neuer Lehrpersonen.</p>
-<p>Funktionen:</p>
+<p>Zuständig für den Einladungsprozess neuer Benutzer.</p>
 <ul>
-<li>Aufruf eines Einladungslinks über Token</li>
-<li>Suche des zugehörigen Benutzers anhand des Einladungstokens</li>
-<li>Prüfung, ob der Benutzer noch den Status <code translate="no" v-pre>invited</code> besitzt</li>
-<li>Prüfung, ob der Einladungslink noch gültig ist</li>
-<li>Anzeige der Passwort-Vergabe-Seite</li>
-<li>Validierung des neuen Passworts</li>
-<li>Speichern des Passworts</li>
-<li>Aktivierung des Benutzerkontos</li>
-<li>Entfernen von Token und Ablaufdatum</li>
-<li>automatischer Login nach erfolgreicher Aktivierung</li>
+<li>Suche des Benutzers anhand von Token, Status und Ablaufdatum</li>
+<li>Anzeige der Passwortvergabe-Seite mit E-Mail des eingeladenen Benutzers</li>
+<li>Setzen des Passworts, Aktivierung des Accounts und Löschen des Tokens</li>
+<li>Automatischer Login nach Abschluss</li>
 </ul>
-<p>Damit wurde der im Konzept vorgesehene Einladungs-Workflow technisch vorbereitet.</p>
-<hr>
 <doc-anchor-target id="passwordresetcontroller">
-    <h3>
+    <h4>
         <doc-anchor-trigger class="header-anchor-trigger" to="#passwordresetcontroller">#</doc-anchor-trigger>
-        <span><code translate="no" v-pre>PasswordResetController</code></span>
+        <span>PasswordResetController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die Zurücksetzung vergessener Passwörter.</p>
+<ul>
+<li>Anzeige der Passwort-vergessen-Seite</li>
+<li>Versand des Reset-Links</li>
+<li>Anzeige der Reset-Seite mit Token</li>
+<li>Setzen des neuen Passworts</li>
+<li>Weiterleitung auf Login bei Erfolg</li>
+</ul>
+<hr>
+<doc-anchor-target id="gemeinsame-bereiche-webshared">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#gemeinsame-bereiche-webshared">#</doc-anchor-trigger>
+        <span>Gemeinsame Bereiche (<code translate="no" v-pre>Web\Shared</code>)</span>
     </h3>
 </doc-anchor-target>
-<p>Der <code translate="no" v-pre>PasswordResetController</code> setzt die Passwort-Zurücksetzung um.</p>
-<p>Funktionen:</p>
+<doc-anchor-target id="dashboardcontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#dashboardcontroller">#</doc-anchor-trigger>
+        <span>DashboardController</span>
+    </h4>
+</doc-anchor-target>
+<p>Das Dashboard liefert abhängig von der Rolle unterschiedliche Informationen.</p>
+<p>Für Administratoren:</p>
 <ul>
-<li>Anzeige der Seite „Passwort vergessen“</li>
-<li>Validierung der eingegebenen E-Mail-Adresse</li>
-<li>Versand eines Reset-Links</li>
-<li>Anzeige der Reset-Seite über Token</li>
-<li>Validierung von Token, E-Mail und neuem Passwort</li>
-<li>Speichern des neuen Passworts</li>
-<li>Weiterleitung zurück zur Login-Seite nach erfolgreicher Änderung</li>
+<li>Anzahl ausstehender Gutscheine</li>
+<li>Die letzten 10 erstellten Gutscheine</li>
 </ul>
-<p>Damit können Benutzer ihr Passwort selbstständig zurücksetzen, ohne dass ein Administrator eingreifen muss.</p>
+<p>Für Lehrpersonen:</p>
+<ul>
+<li>Die letzten 10 eigenen Gutscheine</li>
+<li>Anzahl abgelehnter Gutscheine</li>
+</ul>
+<doc-anchor-target id="studentcontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#studentcontroller">#</doc-anchor-trigger>
+        <span>StudentController</span>
+    </h4>
+</doc-anchor-target>
+<p>Die gemeinsame Schülerverwaltung für Admin und Lehrer.</p>
+<ul>
+<li>Übersicht aller Schüler mit Paginierung</li>
+<li>Anlegen neuer Schüler mit Validierung (Name, E-Mail eindeutig)</li>
+<li>Bearbeiten vorhandener Schüler</li>
+<li>Löschen nur bei fehlenden aktiven Gutscheinen (Prüfung über Status)</li>
+<li>Archivierte Gutscheine des Schülers werden beim Löschen mitentfernt</li>
+</ul>
+<doc-anchor-target id="vouchercreatecontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#vouchercreatecontroller">#</doc-anchor-trigger>
+        <span>VoucherCreateController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die Erstellung von Gutscheinen (Einzel und Stapel).</p>
+<ul>
+<li>Laden aktiver Templates und vorhandener Schüler</li>
+<li>Validierung: Template muss existieren, mindestens ein Schüler, Begründung als Pflichtfeld</li>
+<li>Bei mehreren Schülern: automatische Vergabe einer Batch-ID</li>
+<li>Pro Schüler: eigene Gutscheinnummer und eigener QR-Token</li>
+<li>Alle Gutscheine werden gespeichert</li>
+</ul>
+<doc-anchor-target id="redeemcontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#redeemcontroller">#</doc-anchor-trigger>
+        <span>RedeemController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die digitale Einlösung über QR-Code-Token.</p>
+<ul>
+<li>Laden des Gutscheins</li>
+<li>Anzeige der Gutschein-Details mit Student und Template</li>
+<li>Prüfung: Status muss <code translate="no" v-pre>sent</code> sein und Ablaufdatum darf nicht überschritten sein</li>
+<li>Speichern der Einlösung: Status auf <code translate="no" v-pre>redeemed</code>, Zeitpunkt und einlösender Benutzer</li>
+</ul>
 <hr>
+<doc-anchor-target id="administrationsbereich-webadmin">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#administrationsbereich-webadmin">#</doc-anchor-trigger>
+        <span>Administrationsbereich (<code translate="no" v-pre>Web\Admin</code>)</span>
+    </h3>
+</doc-anchor-target>
+<doc-anchor-target id="vouchercontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#vouchercontroller">#</doc-anchor-trigger>
+        <span>VoucherController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die administrative Verwaltung aller Gutscheine.</p>
+<ul>
+<li>Übersicht aller Gutscheine mit Eager Loading (Student, Aussteller, Template) und Paginierung</li>
+<li>Detailansicht mit zusätzlichem Laden des Einlösers</li>
+<li>Bearbeiten von Begründung, Zusatztext, Klasse und Ablaufdatum</li>
+<li>Löschen von Gutscheinen</li>
+<li>Bestätigungsansicht: alle Gutscheine mit Status <code translate="no" v-pre>pending</code></li>
+<li>Bestätigen: Status auf <code translate="no" v-pre>confirmed</code>, Ausstellungsdatum wird gesetzt</li>
+<li>Ablehnen: Status auf <code translate="no" v-pre>rejected</code> mit Pflichtfeld Ablehnungsgrund</li>
+<li>Zurücksetzen: Status zurück auf <code translate="no" v-pre>pending</code>, Ablehnungsgrund und Versanddatum werden gelöscht</li>
+</ul>
+<doc-anchor-target id="templatecontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#templatecontroller">#</doc-anchor-trigger>
+        <span>TemplateController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die Verwaltung der Gutschein-Vorlagen.</p>
+<ul>
+<li>Übersicht aller Templates sortiert nach Name</li>
+<li>Erstellen und Bearbeiten mit Validierung (Name, Inhalt als Pflichtfelder)</li>
+<li>Optionaler Upload von Logo und Unterschrift</li>
+<li>Löschen nur möglich, wenn keine Gutscheine auf dem Template basieren</li>
+<li>Deaktivieren als Alternative zum Löschen</li>
+</ul>
+<doc-anchor-target id="usercontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#usercontroller">#</doc-anchor-trigger>
+        <span>UserController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die Benutzerverwaltung durch den Administrator.</p>
+<ul>
+<li>Übersicht aller Benutzer sortiert nach Name</li>
+<li>Anlegen neuer Benutzer mit Rolle (admin oder teacher) und optionalen Berechtigungen</li>
+<li>Generierung eines Einladungstokens</li>
+<li>Versand der Einladungs-E-Mail mit Link zur Passwortvergabe</li>
+<li>Erneutes Einladen: neuer Token wird generiert und versendet</li>
+<li>Berechtigungen (Erstellung, Einlösung) per Toggle aktualisieren</li>
+<li>Deaktivieren und Aktivieren von Accounts</li>
+<li>Löschen nur möglich, wenn keine aktiven Gutscheine mit dem Benutzer als Aussteller verknüpft sind</li>
+</ul>
+<doc-anchor-target id="archivecontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#archivecontroller">#</doc-anchor-trigger>
+        <span>ArchiveController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die Anzeige archivierter Gutscheine.</p>
+<ul>
+<li>Laden aller Gutscheine mit Status <code translate="no" v-pre>archived</code></li>
+<li>Eager Loading von Student, Aussteller und Template</li>
+<li>Sortierung nach Archivierungszeitpunkt</li>
+<li>Paginierung mit 20 Einträgen pro Seite</li>
+</ul>
+<hr>
+<doc-anchor-target id="lehrerbereich-webteacher">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#lehrerbereich-webteacher">#</doc-anchor-trigger>
+        <span>Lehrerbereich (<code translate="no" v-pre>Web\Teacher</code>)</span>
+    </h3>
+</doc-anchor-target>
+<doc-anchor-target id="myvouchercontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#myvouchercontroller">#</doc-anchor-trigger>
+        <span>MyVoucherController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die Verwaltung der eigenen Gutscheine durch Lehrpersonen.</p>
+<ul>
+<li>Übersicht aller selbst erstellten Gutscheine</li>
+<li>Detailansicht: Zugriff nur auf eigene Gutscheine, Prüfung über</li>
+<li>Bearbeitung nur bei abgelehnten Gutscheinen</li>
+<li>Nach Korrektur: Status wechselt zurück auf <code translate="no" v-pre>pending</code>, Ablehnungsgrund wird gelöscht</li>
+</ul>
+<doc-anchor-target id="personalizedtemplatecontroller">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#personalizedtemplatecontroller">#</doc-anchor-trigger>
+        <span>PersonalizedTemplateController</span>
+    </h4>
+</doc-anchor-target>
+<p>Zuständig für die Personalisierung von Templates durch Lehrpersonen.</p>
+<ul>
+<li>Übersicht aller aktiven Basis-Templates und eigener Personalisierungen</li>
+<li>Erstellen: Basis-Template wird als vollständige Kopie übernommen, Lehrer kann Inhalt frei anpassen</li>
+<li>Bearbeiten und Löschen eigener Personalisierungen</li>
+<li>Zugriffskontrolle</li>
+</ul>
+<hr>
+<doc-anchor-target id="technische-abbildung-der-kernprozesse">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#technische-abbildung-der-kernprozesse">#</doc-anchor-trigger>
+        <span>Technische Abbildung der Kernprozesse</span>
+    </h2>
+</doc-anchor-target>
+<p>Die fachlich beschriebenen Abläufe werden durch die Backend-Struktur wie folgt abgebildet:</p>
+<doc-anchor-target id="1-ersteinrichtung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#1-ersteinrichtung">#</doc-anchor-trigger>
+        <span>1. Ersteinrichtung</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li><code translate="no" v-pre>LoginController</code> prüft beim Aufruf, ob Benutzer existieren</li>
+<li>Falls nicht: Weiterleitung auf <code translate="no" v-pre>SetupController</code></li>
+<li>Erster registrierter Benutzer erhält Rolle <code translate="no" v-pre>admin</code> und Status <code translate="no" v-pre>active</code></li>
+</ul>
+<doc-anchor-target id="2-benutzer-einladung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#2-benutzer-einladung">#</doc-anchor-trigger>
+        <span>2. Benutzer-Einladung</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>Administrator erstellt Benutzer&#x60;</li>
+<li>System erzeugt Token mit 7 Tagen Gültigkeit und versendet E-Mail</li>
+<li>Eingeladener Benutzer öffnet Link, <code translate="no" v-pre>InvitationController</code> prüft Token</li>
+<li>Nach Passwortvergabe: Account wird auf <code translate="no" v-pre>active</code> gesetzt, Token gelöscht</li>
+</ul>
+<doc-anchor-target id="3-gutschein-erstellung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#3-gutschein-erstellung">#</doc-anchor-trigger>
+        <span>3. Gutschein-Erstellung</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>Berechtigter Benutzer wählt Template und Schüler in <code translate="no" v-pre>VoucherCreateController</code></li>
+<li>Pro Schüler wird ein eigener Gutschein mit eindeutiger Nummer und QR-Token erstellt</li>
+<li>Bei Mehrfachauswahl wird eine gemeinsame Batch-ID vergeben</li>
+<li>Alle Gutscheine werden mit Status <code translate="no" v-pre>pending</code> gespeichert</li>
+</ul>
+<doc-anchor-target id="4-gutschein-prüfung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#4-gutschein-prüfung">#</doc-anchor-trigger>
+        <span>4. Gutschein-Prüfung</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>Bestätigung: Status auf <code translate="no" v-pre>confirmed</code>, Ausstellungsdatum wird gesetzt</li>
+<li>Ablehnung: Status auf <code translate="no" v-pre>rejected</code> mit Pflichtfeld Ablehnungsgrund</li>
+<li>Lehrer kann Gutschein korrigieren und erneut einreichen</li>
+</ul>
+<doc-anchor-target id="5-gutschein-einlösung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#5-gutschein-einlösung">#</doc-anchor-trigger>
+        <span>5. Gutschein-Einlösung</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>QR-Code enthält Link mit Token</li>
+<li>System prüft Status (<code translate="no" v-pre>sent</code>) und Ablaufdatum</li>
+<li>Berechtigter Benutzer bestätigt, Zeitpunkt und Einlöser werden gespeichert</li>
+</ul>
+<doc-anchor-target id="6-archivierung">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#6-archivierung">#</doc-anchor-trigger>
+        <span>6. Archivierung</span>
+    </h3>
+</doc-anchor-target>
+<ul>
+<li>Eingelöste oder abgelaufene Gutscheine sollen später automatisch archiviert werden</li>
+<li><code translate="no" v-pre>ArchiveController</code> zeigt archivierte Gutscheine an</li>
+<li>Löschlogik nach Ablauf der Aufbewahrungsfrist ist geplant</li>
+</ul>
+<hr>
+<doc-anchor-target id="nächste-geplante-ausbauschritte">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#nächste-geplante-ausbauschritte">#</doc-anchor-trigger>
+        <span>Nächste geplante Ausbauschritte</span>
+    </h2>
+</doc-anchor-target>
+<ul>
+<li>PDF-Generierung für bestätigte Gutscheine</li>
+<li>Automatischer E-Mail-Versand an Schüler</li>
+<li>Statuswechsel auf <code translate="no" v-pre>sent</code> nach erfolgreichem Versand</li>
+<li>Fehlerbehandlung bei fehlgeschlagenem Versand</li>
+<li>Automatische Archivierungslogik</li>
+<li>Automatische Löschlogik nach Aufbewahrungsfrist</li>
+<li>Such-, Filter- und Vorschaufunktionen in den Verwaltungsansichten</li>
+</ul>
 
                 
                 <!-- Required only on API pages -->
