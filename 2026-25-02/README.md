@@ -29,7 +29,7 @@ Das System unterscheidet drei Benutzerrollen mit klar abgegrenzten Berechtigunge
 
 ### Administrator (Direktion / Sekretariat)
 
-Der erste Administrator-Account wird über eine einmalige Registrierung angelegt. Beim erstmaligen Aufruf des Systems wird automatisch die Registrierungsseite angezeigt. Nach erfolgreicher Registrierung wird dieser Account als Administrator gespeichert und die öffentliche Registrierung dauerhaft deaktiviert. Alle weiteren Benutzer (Administratoren und Lehrpersonen) werden ausschließlich über den Einladungs-Workflow durch einen bestehenden Administrator erstellt.
+Der erste Administrator-Account wird über eine einmalige Registrierung angelegt. Beim erstmaligen Aufruf des Systems wird automatisch die Registrierungsseite angezeigt. Nach erfolgreicher Registrierung wird dieser Account als Administrator gespeichert und die öffentliche Registrierung dauerhaft deaktiviert. Alle weiteren Benutzer (Administratoren und Lehrpersonen) werden ausschließlich über den Einladungs-Workflow durch einen bestehenden Administrator erstellt. 
 
 Der Administrator verfügt über Vollzugriff auf alle Funktionen des Systems. Im Einzelnen umfasst dies:
 
@@ -88,14 +88,24 @@ Die Archivierung und Löschung von Gutscheinen erfolgt automatisiert. Abgelaufen
 
 ## Workflow
 
-### Lehrer-Account-Erstellung
+### Ersteinrichtung
 
-Die Erstellung von Lehrer-Accounts erfolgt ausschließlich durch den Administrator:
+Die Ersteinrichtung des Systems erfolgt einmalig und dient zur Anlage des ersten Administrator-Accounts:
+ 
+1. Beim erstmaligen Aufruf des Systems erkennt die Anwendung, dass noch kein Benutzer existiert, und leitet automatisch auf die Registrierungsseite weiter.
+2. Der erste Benutzer registriert sich mit Name, E-Mail-Adresse und Passwort.
+3. Dieser Account wird automatisch mit der Rolle „Administrator" gespeichert.
+4. Nach erfolgreicher Registrierung wird die öffentliche Registrierung dauerhaft deaktiviert. Die Registrierungsseite ist nicht mehr erreichbar.
+5. Alle weiteren Benutzer werden ausschließlich über den Einladungs-Workflow durch einen bestehenden Administrator erstellt.
 
-1. Der Administrator legt einen neuen Lehrer an und erfasst Name und E-Mail-Adresse.
+### Benutzer-Account-Erstellung
+
+Die Erstellung weiterer Benutzer-Accounts (Administratoren und Lehrpersonen) erfolgt ausschließlich durch einen bestehenden Administrator:
+ 
+1. Der Administrator legt einen neuen Benutzer an und erfasst Name, E-Mail-Adresse und Rolle (Administrator oder Lehrer).
 2. Das System versendet automatisch eine Einladungs-E-Mail an die angegebene Adresse. Die E-Mail enthält einen einmaligen Link zur Passwort-Vergabe.
-3. Der Lehrer öffnet den Link und vergibt sein persönliches Passwort.
-4. Nach erfolgreicher Passwort-Vergabe ist der Account aktiv und der Lehrer kann sich einloggen.
+3. Der eingeladene Benutzer öffnet den Link und vergibt sein persönliches Passwort.
+4. Nach erfolgreicher Passwort-Vergabe ist der Account aktiv und der Benutzer kann sich einloggen.
 5. Der Einladungslink ist nach einmaliger Nutzung oder nach Ablauf einer definierten Frist ungültig. Bei Bedarf kann der Administrator eine neue Einladung versenden.
 
 ### Gutschein-Erstellung
