@@ -10,26 +10,26 @@
     <meta name="generator" content="Retype 4.4.0">
 
     <!-- Primary Meta Tags -->
-    <title>Erweiterung der technischen Planung – Models, Controller und Systemlogik</title>
-    <meta name="title" content="Erweiterung der technischen Planung – Models, Controller und Systemlogik">
-    <meta name="description" content="Die Backend-Struktur wurde in vier Controller-Bereiche aufgeteilt:">
+    <title>Technische Umsetzung</title>
+    <meta name="title" content="Technische Umsetzung">
+    <meta name="description" content="Es wurden mehrere Middlewareklassen erstellt">
 
     <!-- Canonical -->
-    <link rel="canonical" href="http://moser.2526.rasser-unterricht.at/2026-11-03/">
+    <link rel="canonical" href="http://moser.2526.rasser-unterricht.at/2026-18-03/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="http://moser.2526.rasser-unterricht.at/2026-11-03/">
-    <meta property="og:title" content="Erweiterung der technischen Planung – Models, Controller und Systemlogik">
-    <meta property="og:description" content="Die Backend-Struktur wurde in vier Controller-Bereiche aufgeteilt:">
+    <meta property="og:url" content="http://moser.2526.rasser-unterricht.at/2026-18-03/">
+    <meta property="og:title" content="Technische Umsetzung">
+    <meta property="og:description" content="Es wurden mehrere Middlewareklassen erstellt">
     <meta property="og:site_name" content="Moser">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="http://moser.2526.rasser-unterricht.at/2026-11-03/">
-    <meta name="twitter:title" content="Erweiterung der technischen Planung – Models, Controller und Systemlogik">
-    <meta name="twitter:description" content="Die Backend-Struktur wurde in vier Controller-Bereiche aufgeteilt:">
+    <meta name="twitter:url" content="http://moser.2526.rasser-unterricht.at/2026-18-03/">
+    <meta name="twitter:title" content="Technische Umsetzung">
+    <meta name="twitter:description" content="Es wurden mehrere Middlewareklassen erstellt">
 
     <script data-cfasync="false">(function(){var cl=document.documentElement.classList,ls=localStorage.getItem("retype_scheme"),hd=cl.contains("dark"),hl=cl.contains("light"),wm=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;if(ls==="dark"||(!ls&&wm&&!hd&&!hl)){cl.remove("light");cl.add("dark")}else if(ls==="light"||(!ls&&!wm&&!hd&&!hl)){cl.remove("dark");cl.add("light")}})();</script>
 
@@ -127,7 +127,7 @@
                 <!-- Rendered if sidebar right is enabled -->
                 <div id="retype-sidebar-right-toggle"></div>
                 <!-- Page content  -->
-<h1 id="erweiterung-der-technischen-planung--models-controller-und-systemlogik">Erweiterung der technischen Planung – Models, Controller und Systemlogik</h1>
+<h1 id="technische-umsetzung">Technische Umsetzung</h1>
 <div class="-mt-3 mb-12 flex flex-wrap text-sm text-gray-400 dark:text-dark-350 items-center">
     <div class="flex items-center">
         <div>By</div>
@@ -140,154 +140,30 @@
     </div>
 </div>
 
-<h2 id="überblick">Überblick</h2>
-<p>Die Backend-Struktur wurde in vier Controller-Bereiche aufgeteilt:</p>
+<h2 id="middleware">Middleware</h2>
+<p>Es wurden mehrere Middlewareklassen erstellt</p>
 <ul>
-<li><code translate="no" v-pre>Web\Auth</code> – Authentifizierung und Ersteinrichtung</li>
-<li><code translate="no" v-pre>Web\Shared</code> – Gemeinsame Funktionen für Admin und Lehrer</li>
-<li><code translate="no" v-pre>Web\Admin</code> – Administratorspezifische Verwaltung</li>
-<li><code translate="no" v-pre>Web\Teacher</code> – Lehrerspezifische Funktionen</li>
+<li><strong>EnsureSetupIsNeeded</strong> – Erlaubt die Ersteinrichtung nur solange noch kein Benutzer existiert.</li>
+<li><strong>EnsureIsActive</strong> – Loggt deaktivierte Benutzer automatisch aus.</li>
+<li><strong>EnsureIsAdmin</strong> – Beschränkt Admin-Bereiche auf Administratoren.</li>
+<li><strong>EnsureCanCreateVouchers</strong> – Prüft ob der Benutzer Gutscheine erstellen darf.</li>
+<li><strong>EnsureCanRedeemVouchers</strong> – Prüft ob der Benutzer Gutscheine einlösen darf.</li>
 </ul>
-<hr>
-<h2 id="models">Models</h2>
-<h3 id="user">User</h3>
-<p>Repräsentiert Administratoren und Lehrpersonen.</p>
-<p>Felder: <code translate="no" v-pre>name</code>, <code translate="no" v-pre>email</code>, <code translate="no" v-pre>password</code>, <code translate="no" v-pre>role</code>, <code translate="no" v-pre>can_create_vouchers</code>, <code translate="no" v-pre>can_redeem_vouchers</code>, <code translate="no" v-pre>status</code>, <code translate="no" v-pre>invitation_token</code>, <code translate="no" v-pre>invitation_expires_at</code></p>
-<p>Beziehungen: <code translate="no" v-pre>issuedVouchers</code>, <code translate="no" v-pre>redeemedVouchers</code>, <code translate="no" v-pre>createdStudents</code>, <code translate="no" v-pre>personalizedTemplates</code></p>
-<h3 id="student">Student</h3>
-<p>Repräsentiert die Gutschein-Empfänger. Kein Login, Klasse wird nicht am Schüler gespeichert.</p>
-<p>Felder: <code translate="no" v-pre>name</code>, <code translate="no" v-pre>email</code>, <code translate="no" v-pre>created_by</code></p>
-<p>Beziehungen: <code translate="no" v-pre>vouchers</code>, <code translate="no" v-pre>creator</code></p>
-<h3 id="voucher">Voucher</h3>
-<p>Zentrale Entität – verbindet Templates, Schüler, Aussteller und Einlösung.</p>
-<p>Felder: <code translate="no" v-pre>voucher_number</code>, <code translate="no" v-pre>qr_token</code>, <code translate="no" v-pre>template_id</code>, <code translate="no" v-pre>personalized_template_id</code>, <code translate="no" v-pre>issuer_id</code>, <code translate="no" v-pre>student_id</code>, <code translate="no" v-pre>redeemed_by</code>, <code translate="no" v-pre>class_name</code>, <code translate="no" v-pre>reason</code>, <code translate="no" v-pre>additional_text</code>, <code translate="no" v-pre>status</code>, <code translate="no" v-pre>rejection_reason</code>, <code translate="no" v-pre>batch_id</code>, <code translate="no" v-pre>issued_at</code>, <code translate="no" v-pre>expires_at</code>, <code translate="no" v-pre>sent_at</code>, <code translate="no" v-pre>redeemed_at</code>, <code translate="no" v-pre>archived_at</code>, <code translate="no" v-pre>retention_until</code></p>
-<p>Beziehungen: <code translate="no" v-pre>template</code>, <code translate="no" v-pre>personalizedTemplate</code>, <code translate="no" v-pre>issuer</code>, <code translate="no" v-pre>student</code>, <code translate="no" v-pre>redeemer</code></p>
-<h3 id="vouchertemplate">VoucherTemplate</h3>
-<p>Vom Administrator verwaltete Gutschein-Vorlagen.</p>
-<p>Felder: <code translate="no" v-pre>name</code>, <code translate="no" v-pre>description</code>, <code translate="no" v-pre>content</code>, <code translate="no" v-pre>validity_days</code>, <code translate="no" v-pre>logo_path</code>, <code translate="no" v-pre>signature_path</code>, <code translate="no" v-pre>is_active</code></p>
-<p>Beziehungen: <code translate="no" v-pre>vouchers</code>, <code translate="no" v-pre>personalizedTemplates</code></p>
-<h3 id="personalizedtemplate">PersonalizedTemplate</h3>
-<p>Vollständige Kopie eines Basis-Templates, frei anpassbar durch Lehrer.</p>
-<p>Felder: <code translate="no" v-pre>base_template_id</code>, <code translate="no" v-pre>teacher_id</code>, <code translate="no" v-pre>content</code></p>
-<p>Beziehungen: <code translate="no" v-pre>baseTemplate</code>, <code translate="no" v-pre>teacher</code>, <code translate="no" v-pre>vouchers</code></p>
-<hr>
-<h2 id="controller">Controller</h2>
-<h3 id="auth">Auth</h3>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Controller</th>
-<th>Funktion</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SetupController</td>
-<td>Ersteinrichtung – erster User wird Admin</td>
-</tr>
-<tr>
-<td>LoginController</td>
-<td>Login/Logout, Weiterleitung auf Setup wenn kein User existiert</td>
-</tr>
-<tr>
-<td>InvitationController</td>
-<td>Einladungslink annehmen, Passwort setzen, Account aktivieren</td>
-</tr>
-<tr>
-<td>PasswordResetController</td>
-<td>Passwort-vergessen und Reset</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h3 id="shared">Shared</h3>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Controller</th>
-<th>Funktion</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>DashboardController</td>
-<td>Rollenbasiertes Dashboard (Admin: ausstehende Gutscheine, Lehrer: eigene Gutscheine)</td>
-</tr>
-<tr>
-<td>StudentController</td>
-<td>CRUD Schüler, Lösch-Schutz bei aktiven Gutscheinen</td>
-</tr>
-<tr>
-<td>VoucherCreateController</td>
-<td>Gutschein-Erstellung (Einzel + Stapel mit Batch-ID)</td>
-</tr>
-<tr>
-<td>RedeemController</td>
-<td>Einlösung über QR-Token, Status- und Ablaufprüfung</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h3 id="admin">Admin</h3>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Controller</th>
-<th>Funktion</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>VoucherController</td>
-<td>Alle Gutscheine verwalten, bestätigen, ablehnen, zurücksetzen</td>
-</tr>
-<tr>
-<td>TemplateController</td>
-<td>CRUD Templates mit Logo/Unterschrift-Upload</td>
-</tr>
-<tr>
-<td>UserController</td>
-<td>Benutzer anlegen mit Einladungs-E-Mail, Berechtigungen, deaktivieren/löschen</td>
-</tr>
-<tr>
-<td>ArchiveController</td>
-<td>Archivierte Gutscheine anzeigen</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h3 id="teacher">Teacher</h3>
-<div class="table-wrapper scrollbar overflow-hidden">
-<table class="comfortable">
-<thead>
-<tr>
-<th>Controller</th>
-<th>Funktion</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>MyVoucherController</td>
-<td>Eigene Gutscheine einsehen, abgelehnte korrigieren und erneut einreichen</td>
-</tr>
-<tr>
-<td>PersonalizedTemplateController</td>
-<td>Templates personalisieren, bearbeiten, löschen</td>
-</tr>
-</tbody>
-</table>
-</div>
-<hr>
-<h2 id="offene-punkte">Offene Punkte</h2>
+<p>Admins haben bei den Berechtigungsprüfungen immer Zugriff.</p>
+<h2 id="mail">Mail</h2>
+<p>Es gibt zwei E-Mail-Typen:</p>
 <ul>
-<li>Automatische Archivierungslogik</li>
-<li>Automatische Löschlogik nach Aufbewahrungsfrist</li>
-<li>Fehlerbehandlung bei fehlgeschlagenem E-Mail-Versand</li>
-<li>Such- und Filterfunktionen in den Verwaltungsansichten</li>
+<li><strong>InvitationMail</strong> – Wird beim Anlegen eines neuen Benutzers verschickt und enthält einen Einladungslink zur Passwortvergabe.</li>
+<li><strong>VoucherMail</strong> – Verschickt einen bestätigten Gutschein als PDF-Anhang an den Empfänger.</li>
 </ul>
+<p>Beide sind bereits für Queue-Verarbeitung vorbereitet, laufen aktuell aber synchron.</p>
+<h2 id="service">Service</h2>
+<p>Der <strong>VoucherPdfService</strong> erzeugt Gutscheine als PDF. Er nimmt den Template-Text, ersetzt die Platzhalter mit den konkreten Daten und baut daraus ein fertiges PDF mit Logo, Inhalt, Infos, Unterschrift und QR-Code zum Einlösen.</p>
+<h2 id="einladungs-flow">Einladungs-Flow</h2>
+<p>Neue Benutzer werden vom Admin angelegt und bekommen eine Einladungs-E-Mail. Über den Link darin setzen sie ihr Passwort und werden direkt eingeloggt. Die Einladung läuft nach 7 Tagen ab und kann bei Bedarf erneut versendet werden.</p>
+<h2 id="ui-redesign">UI-Redesign</h2>
+<p>Alle Views wurden optisch überarbeitet. Ziel war ein einheitliches, ruhiges Erscheinungsbild mit durchgängigem Farbschema: graue Eingabefelder ohne Rahmen, dezente Labels, Indigo als Akzentfarbe für Buttons und Links.</p>
+<p>Die Navigation wurde zweizeilig aufgebaut — Logo und Benutzername oben, gruppierte Navigationslinks unten mit Hervorhebung der aktiven Seite.</p>
 
                 
                 <!-- Required only on API pages -->
@@ -297,23 +173,16 @@
             
                 <nav id="retype-nextprev" class="print:hidden flex mt-14">
                     <div class="w-1/2">
-                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../2026-04-03/">
+                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../2026-11-03/">
                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                             <span>
                                 <span class="block text-xs font-normal text-base-text-muted">Previous</span>
-                                <span class="block mt-1">04. März 2026</span>
+                                <span class="block mt-1">11. März 2026</span>
                             </span>
                         </a>
                     </div>
             
                     <div class="w-1/2">
-                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-body-link border border-base-border hover:border-base-border-hover rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../2026-18-03/">
-                            <span>
-                                <span class="block text-xs font-normal text-right text-base-text-muted">Next</span>
-                                <span class="block mt-1">18. März 2026</span>
-                            </span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
-                        </a>
                     </div>
                 </nav>
             </footer>
@@ -354,6 +223,6 @@
 
     <div id="retype-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "11. März 2026", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "18. März 2026", level: 1, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: /sitemap.xml.gz
+Sitemap: http://moser.2526.rasser-unterricht.at/sitemap.xml.gz
